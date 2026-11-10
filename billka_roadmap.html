@@ -399,6 +399,25 @@
       compromiso que ya existe con el primer local. Este documento se escribe hoy precisamente para que el 17-nov
       no haya que decidir nada: solo ejecutar.</div>
 
+    <div class="stage done">
+      <div class="head"><span class="id">ETAPAS A Y B</span><h4>Higiene y no mentir</h4>
+        <span class="badge b-ok">Hechas · 10-nov-2026</span></div>
+      <p class="meta">Lo que hereda este producto: un árbol que dice la verdad y unos scripts que fallan cuando
+        no han hecho su trabajo (ADR <code>B0011</code>). Sin esto, todo lo que sigue se construye sobre
+        ficheros que no existen.</p>
+      <ul>
+        <li>106 stubs <code>.kt</code> de dos líneas (<code>export {};</code> dentro de Kotlin, no compilaban) y
+          10 migraciones vacías <b>borrados</b>; <code>fiskal</code> → <code>fiscal</code> en 26 rutas.</li>
+        <li><code>backup.sh</code> verifica con <code>pg_restore --list</code> y <code>restore.sh</code>
+          restaura de verdad: el ciclo tabla → backup → <code>DROP</code> → restore se probó recuperando una
+          fila.</li>
+        <li>Secretos con <code>${VAR:?}</code>: sin <code>.env</code> el compose aborta en vez de arrancar con
+          una contraseña publicada. CI real, en rojo mientras no haya tests.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> ningún script devuelve éxito sin haber hecho su trabajo.
+        Cumplido y comprobable con los comandos de la última sección.</div>
+    </div>
+
     <div class="stage next">
       <div class="head"><span class="id">ETAPA C</span><h4>Formato de lote y <code>fiscal-kit</code> mínimo</h4>
         <span class="week">17–23 nov</span> <span class="badge b-info">Siguiente</span></div>
