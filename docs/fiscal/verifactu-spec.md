@@ -9,5 +9,8 @@ Referencias principales:
 Notas:
 
 - Un QR propio no es cumplimiento VeriFactu.
-- Si Billka emite registros de facturación, debe aislarse y tratarse como frontera SIF.
+- **Billka no emite registros de facturación** (ADR `B0012`): si algún día lo hiciera, tendría que
+  aislarse y tratarse como frontera SIF, con las obligaciones del RRSIF y la unicidad de
+  facturación. Por eso no lo hace.
+- El XML de terceros se **lee** para el cruce; no se genera.
 - Komanda permanece como integrador/gestor, no SIF.

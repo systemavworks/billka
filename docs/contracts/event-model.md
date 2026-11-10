@@ -1,8 +1,14 @@
 # Modelo de eventos
 
 Billka publica eventos de dominio de los que dependen otras piezas (web, operaciones, futura
-convergencia con Komanda). Este documento fija qué se publica, cuándo y con qué garantías.
+convergencia con Komanda). Este documento fija qué se publica, cuándo y con qué propiedades.
 Los schemas están en `contracts/`; esto es la parte que un schema no puede expresar.
+
+> **Aviso (ADR `B0012`, 10-nov-2026).** Los cinco eventos descritos aquí pertenecen al modelo
+> anterior, en el que Billka emitía facturas. Billka **no emite**: la sustitución por el modelo de
+> constancias (`lote.recibido`, `lote.sellado`, `cruce.realizado`, `ancla.publicada`,
+> `constancia.emitida`) está planificada en la Etapa C. Mientras tanto, este documento describe lo
+> que hay en `contracts/`, no lo que el producto será.
 
 ## Sobre
 
@@ -42,7 +48,7 @@ Regla que atraviesa todo: **los fallos también se publican** (`status: failed`,
 `result: unavailable`). Un flujo de eventos que solo existe cuando todo va bien es un registro
 que miente por omisión, y en facturación eso es exactamente lo que no se puede hacer.
 
-## Garantías
+## Propiedades de entrega
 
 - **Entrega**: *at-least-once* desde un patrón outbox. No hay exactly-once: no existe.
 - **Consumidores**: idempotentes por `id`. Recibir dos veces el mismo `invoice.issued` debe ser

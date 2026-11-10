@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Billka — integridad fiscal verificable · producto y hoja de ruta</title>
-<meta name="description" content="Billka: capa de integridad y cotejo fiscal que convive con el sistema de facturación del cliente. Qué es, qué no es, en qué estado está y en qué orden se construye.">
+<title>Billka — el sello de la frontera fiscal · producto y camino</title>
+<meta name="description" content="Billka verifica lo que el cliente entrega, lo que el SIF del despacho emite y el cruce entre ambos. No emite, no remite y no lleva libros: atesta hechos técnicos reproducibles. Qué es, qué no es, quién paga y el camino hasta el 31-12-2026.">
 <style>
   :root{
     --bg:#fbfaf8; --panel:#ffffff; --panel2:#f5f2ee; --ink:#1f2328; --muted:#6f6a63;
@@ -90,6 +90,18 @@
   .stage.done{border-left:4px solid var(--ok)}
   .stage.next{border-left:4px solid var(--brand)}
   .stage.later{border-left:4px solid var(--line)}
+  /* --- versión «sello de frontera» (nov-2026) --- */
+  .flow{background:#f3f0ec;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    overflow-x:auto;font-size:12.5px;line-height:1.55;color:#3d3730;margin:14px 0;white-space:pre;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .quote{border-left:3px solid var(--info);background:#eaf1fb;border-radius:10px;padding:10px 14px;
+    font-size:13.5px;color:#26364a;margin:10px 0}
+  .quote i{color:#55677a;font-style:normal}
+  .card.no h4{color:var(--todo)}
+  .card.yes h4{color:var(--ok)}
+  .card .why{margin-top:8px;font-size:12.5px;color:#7a736b}
+  .week{display:inline-block;font-variant-numeric:tabular-nums;font-weight:700;color:var(--brand2);
+    font-size:13px;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -98,90 +110,226 @@
     <div class="brand">
       <img class="logo" alt="Billka" src="logo_billka.jpeg">
       <div>
-        <h1><span class="k">Billka</span> — integridad fiscal verificable</h1>
-        <div class="sub">Capa de integridad y cotejo que convive con el sistema de facturación del cliente ·
-          presentación y hoja de ruta · 10-nov-2026</div>
+        <h1><span class="k">Billka</span> — el sello de la frontera fiscal</h1>
+        <div class="sub">Verifica lo que el cliente entrega, lo que el SIF del despacho emite y el cruce entre
+          ambos · presentación y camino · 10-nov-2026</div>
       </div>
     </div>
-    <div class="tagline">Cada factura encadenada con su huella SHA-256, tramos sellados con anclaje periódico y
-      cotejo puntual contra la AEAT cuando lo pides. <b>Fuera de tu sistema, no dentro:</b> no lo sustituye,
-      no lo copia y no lo lee si no hace falta.</div>
+    <div class="tagline">El SIF dice <b>qué se declaró</b>. Billka deja constancia de que <b>lo declarado es lo
+      que había</b>. No emite, no remite, no lleva libros y no declara: <b>comprueba y firma el resultado</b>,
+      con un método que cualquiera puede repetir sin pedirte permiso.</div>
   </div>
 </header>
 <main class="wrap">
 
   <section id="que-es">
     <h2><span class="dot"></span>Qué es Billka</h2>
-    <p class="lead">Quien ya emite facturas con su programa no necesita otro programa: necesita poder
-      <b>demostrar</b> que lo que emitió no se ha tocado después. Billka se coloca al lado de su sistema
-      actual y produce esa prueba.</p>
-    <div class="grid g4">
-      <div class="card"><h4>Encadenado por registro</h4><p>Cada factura emitida genera una huella SHA-256 que
-        incluye la huella anterior. Cambiar una factura de hace un año rompe la cadena en ese punto y en todos
-        los posteriores, y el cliente puede verificarlo sin creernos.</p></div>
-      <div class="card"><h4>Sellado de tramos</h4><p>La cadena se cierra periódicamente con un anclaje:
-        huella del tramo, recuento y marca temporal. Un tramo sellado ya no se puede reescribir «hacia atrás»
-        sin dejar rastro.</p></div>
-      <div class="card"><h4>QR de verificación</h4><p>El receptor escanea el QR de su factura y ve el mismo
-        contenido que guardamos, con su huella. Es un QR <b>propio de verificación</b>, no el QR de
-        VeriFactu.</p></div>
-      <div class="card"><h4>Cotejo puntual AEAT</h4><p>A petición, se contrasta una factura concreta con lo
-        que la AEAT tiene registrado de ti. Puntual y bajo demanda: sin barridos masivos ni scraping.</p></div>
+    <p class="lead">No es otro programa de facturación. Es la pieza que pone <b>huella y fecha</b> al tránsito
+      entre el autónomo y su gestoría, y demuestra que lo que salió del SIF coincide con lo que entró. Su
+      cliente no es el autónomo: es el <b>despacho</b> que responde por él.</p>
+
+    <div class="flow">   AUTÓNOMO                        FRONTERA                      DESPACHO (SIF)
+ papel · Excel ·  ──────▶   ① CONSTANCIA DE ENTRADA   ──────▶   registros SIF   ──────▶  ② CONSTANCIA DE SALIDA
+ software propio            huella + fecha + quién              (VERI*FACTU o NO)
+                                    │                                        │
+                                    └────────────▶ ③ CRUCE ◀────────────────┘
+                                     qué entró, qué salió, qué no cuadra
+                                                    │
+                                                    ▼
+                                       ④ ANCLA DIARIA (tercero)
+                                    el hash raíz existía ese día</div>
+
+    <div class="grid g2">
+      <div class="card yes"><h4>Lo que aporta</h4>
+        <p>Una constancia por periodo que el despacho puede enseñar, y que el autónomo también tiene. Ninguna
+          de las dos partes puede fabricarla sola, y ninguna necesita confiar en la otra.</p></div>
+      <div class="card no"><h4>Lo que no aporta</h4>
+        <p>No dice «es real», no dice «cumple», no dice «válido fiscalmente». Dice <b>qué se comprobó, contra
+          qué fuente y con qué resultado</b>. La diferencia es la que te mantiene fuera del RRSIF.</p></div>
     </div>
-    <div class="note"><b>Para quién:</b> despachos y empresas que emiten con un ERP o un programa de
-      facturación que no quieren cambiar, y que necesitan <b>evidencia utilizable</b> ante una inspección, un
-      litigio o una due diligence. <b>Para quién no:</b> quien busca que le sustituyan el programa de
-      facturación, o quien espera que Billka le «cumpla» VeriFactu. Eso no es esto.</div>
+
+    <div class="note note-ok"><b>La frase que sostiene el producto:</b> un hash no prueba que una factura sea
+      verdadera —el hash de una factura inventada es un hash perfecto—. Prueba que <b>no ha cambiado</b> y que
+      <b>existía</b>. Para acercarse a «real» hace falta una fuente independiente: banco, TPV, albarán, stock o
+      el propio QR de la AEAT. Por eso Billka nunca sella un solo lado: <b>cruza dos</b>.</div>
   </section>
 
-  <section id="que-no-es">
-    <h2><span class="dot"></span>Qué no es (y conviene decirlo antes)</h2>
-    <p class="lead">La mayor parte del daño de un producto fiscal se hace en la primera conversación, cuando se
-      promete de más. Estas cuatro frases están también en el repositorio, no solo en esta página.</p>
-    <div class="grid g2">
-      <div class="card no"><h4>No es un SIF ni sustituye a VeriFactu</h4><p>Si el cliente está obligado a
-        usar un sistema de emisión con registro, esa obligación sigue siendo suya y del programa que declare.
-        Billka produce evidencia; no asume la condición de sistema de facturación.</p></div>
-      <div class="card no"><h4>Su QR no es el QR de VeriFactu</h4><p>Un QR propio no equivale a cumplimiento
-        normativo. Cuando el cliente necesite el QR de VeriFactu, lo genera su SIF; Billka añade el suyo de
-        verificación al lado.</p></div>
-      <div class="card no"><h4>No es auditoría contable ni asesoría fiscal</h4><p>No revisamos cuentas ni
-        firmamos opiniones. La auditoría de cuentas es actividad regulada y este producto no la ejerce: hablamos
-        de <b>integridad de registros</b> y de <b>cotejo</b>.</p></div>
-      <div class="card no"><h4>No es un colaborador social</h4><p>No somos Suministrador de Información
-        Inmediata (ADR <code>B0007</code>): no hay suministro continuo de datos a la AEAT, solo cotejo puntual
-        cuando el cliente lo pide.</p></div>
-    </div>
+  <section id="hueco">
+    <h2><span class="dot"></span>El hueco legal donde encaja</h2>
+    <p class="lead">No hace falta inventar mercado: está escrito en el <b>Informador VERI*FACTU</b> de la AEAT.
+      Cuatro respuestas oficiales definen el hueco, y Billka se coloca exactamente en él.</p>
+
+    <table>
+      <thead><tr><th>Respuesta oficial de la AEAT</th><th>Consecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><div class="quote">«si el empresario ha delegado la expedición material de la factura en un
+          tercero (como puede ser el asesor/gestor), <b>es el tercero quien, si utiliza un SIF</b>, además de
+          expedir… deberá generar y, si está en la modalidad VERI*FACTU, remitir el registro de
+          facturación»</div></td>
+          <td><b>La gestoría que emite facturas de sus clientes con software es SIF</b> y está sujeta al RRSIF.
+          No es «usuario de software»: es sujeto obligado. Obligación legal, no deseo.</td></tr>
+        <tr><td><div class="quote">«esta posibilidad (la delegación) <b>no exime</b> al obligado a expedir
+          facturas de la responsabilidad sobre dicho cumplimiento»</div></td>
+          <td>El empresario sigue siendo responsable de lo que hace su asesor. <b>Los dos lados del contrato
+          quieren prueba</b>, y con intereses opuestos: eso es lo que hace creíble un sello.</td></tr>
+        <tr><td><div class="quote">«Si se <b>reutilizan esos datos</b>… para obtener con ellos otros productos
+          derivados, entonces <b>SÍ</b> que se considera una facturación utilizando un SIF»</div></td>
+          <td>Casi todo despacho que recibe un Excel y lo usa para los libros registro es SIF de hecho. Y el
+          perímetro alcanza a cualquier programa que se alimente de esos datos.</td></tr>
+        <tr><td><div class="quote">«la utilización de <b>cualquier SIF</b> que produzca facturas obliga a que
+          <b>toda la facturación</b> debe ser informática»</div></td>
+          <td><b>Unicidad de facturación.</b> Si el despacho usa SIF para un cliente, debe absorber el 100 % de
+          su facturación —incluido el papel suelto y el Excel improvisado—.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note note-warn"><b>Dónde se rompe todo:</b> en la entrega. El punto donde el autónomo pasa sus
+      facturas al despacho no tiene SIF, no tiene QR, no tiene AEAT y no tiene custodia. Ahí es donde se pierden
+      facturas, se duplican, se cambian de fecha y se discute después. <b>Ese es el objeto de Billka</b>, no el
+      registro que ya produce el SIF.</div>
+
+    <div class="note"><b>Y lo que la AEAT ya hace gratis:</b> el destinatario puede escanear el QR y verificar en
+      la sede que la factura se declaró. Por eso Billka <b>no vende «¿consta esta factura?»</b>: eso es un
+      commodity. El cotejo AEAT entra como <b>una fuente más del cruce</b>, no como producto.</div>
   </section>
 
-  <section id="enfoque">
-    <h2><span class="dot"></span>Cómo se enfoca</h2>
-    <p class="lead">Ocho reglas que deciden el orden del trabajo. No son eslóganes: cada una se puede comprobar
-      en el repositorio hoy.</p>
+  <section id="constancias">
+    <h2><span class="dot"></span>Las cuatro constancias</h2>
+    <p class="lead">El producto no es «un sello»: son cuatro piezas encadenadas. Cada una cubre un tramo donde hoy
+      nadie responde. La cuarta es la que convierte la promesa en algo comprobable por un tercero.</p>
+
     <div class="grid g2">
-      <div class="card"><h4>1 · Evidencia antes que interfaz</h4><p>La huella y la cadena se prueban con
-        vectores antes de pintar una pantalla. Una web bonita sobre una cadena mal calculada es una web que hay
-        que reescribir.</p></div>
-      <div class="card"><h4>2 · El esquema manda</h4><p>Los datos de una factura emitida son inmutables en la
-        base de datos (triggers), no por convención del código. Si la BD lo permite, ocurrirá.</p></div>
-      <div class="card"><h4>3 · Sin vectores no hay código fiscal</h4><p><code>fiscal-kit</code> no se escribe
-        hasta tener pares <code>entrada → huella/QR/XML</code>. Es lo único que después no se puede improvisar
-        ni comparar con Komanda.</p></div>
-      <div class="card"><h4>4 · Nada dice OK sin hacerlo</h4><p>Los scripts fallan cuando no han probado nada y
-        el CI está en rojo mientras no existan los tests (ADR <code>B0011</code>). Un verde falso cuesta más
-        que un rojo honesto.</p></div>
-      <div class="card"><h4>5 · Multi-tenant cerrado por defecto</h4><p>RLS forzado en toda tabla con
-        <code>tenant_id</code>: sin contexto de tenant no se ve ninguna fila. El aislamiento es de la base de
-        datos, no de la consulta (ADR <code>B0006</code>).</p></div>
-      <div class="card"><h4>6 · Separados de Komanda</h4><p>Runtime, base de datos y despliegue propios; se
-        comparte solo la librería <code>fiscal-kit</code> (ADR <code>B0002</code>). Un fallo de Billka no puede
-        tumbar la caja de Komanda.</p></div>
-      <div class="card"><h4>7 · Los fallos se publican</h4><p>Un cotejo no disponible o una firma fallida son
-        eventos de dominio con su estado, no silencios optimistas. El cliente ve lo mismo que
-        nosotros.</p></div>
-      <div class="card"><h4>8 · Dinero en céntimos</h4><p>Columnas enteras <code>*_cents</code>. Ningún
-        <code>float</code> toca un importe: el redondeo fiscal no perdona.</p></div>
+      <div class="card"><h4>① Constancia de entrada</h4>
+        <p>Huella del lote que el cliente entrega (CSV, Excel, PDF, XML, papel escaneado), con fecha y quién lo
+          entregó.</p>
+        <p class="why">Resuelve: «yo te pasé esa factura y no la has metido» · facturas perdidas, duplicadas,
+          cambiadas de fecha.</p></div>
+      <div class="card"><h4>② Constancia de salida</h4>
+        <p>Huella de los registros que el SIF del despacho emitió o remitió, con fecha y responsable.</p>
+        <p class="why">Resuelve: «el sistema dice otra cosa» · coherencia entre lo emitido y lo que se conserva
+          o se remitió.</p></div>
+      <div class="card"><h4>③ Constancia de cruce</h4>
+        <p>Comparación campo a campo —NIF, fecha, número, base, cuota, total— con el detalle de cada
+          discrepancia: ausente, duplicada, distinta.</p>
+        <p class="why">Resuelve lo único que nadie puede fabricar solo: el autónomo no ve el SIF y el SIF no
+          tiene el original en bruto.</p></div>
+      <div class="card"><h4>④ Ancla diaria</h4>
+        <p>Hash raíz de todo lo sellado ese día, fijado por un <b>tercero</b> (sello de tiempo RFC 3161 o
+          publicación externa) y verificable sin acceso a nuestras bases de datos.</p>
+        <p class="why">Resuelve: «¿y cómo sé que no lo generaste la semana pasada?». Sin esto, el sello es
+          auto-referencia.</p></div>
     </div>
+
+    <h3>Qué prueba cada cosa (y qué no)</h3>
+    <table>
+      <thead><tr><th>Propiedad</th><th>La da</th><th>No la da</th></tr></thead>
+      <tbody>
+        <tr><td><b>Integridad</b> — no se alteró desde que se fijó</td><td>Huella + cadena + ancla</td>
+          <td>—</td></tr>
+        <tr><td><b>Anterioridad</b> — existía en esa fecha</td><td>Sello de tiempo de un tercero</td>
+          <td>Una fecha guardada en nuestra BD</td></tr>
+        <tr><td><b>Coherencia</b> — lo que entró es lo que salió</td><td>El cruce contra la fuente</td>
+          <td>Sellar un solo lado</td></tr>
+        <tr><td><b>Veracidad</b> — la operación ocurrió</td><td>Fuente independiente (banco, TPV, albarán,
+          stock, AEAT)</td><td><b>Nunca un hash</b>: el hash de una factura inventada es un hash perfecto</td></tr>
+        <tr><td><b>Exactitud fiscal</b> — cumple el RRSIF</td><td>El SIF declarado y su proveedor</td>
+          <td>Billka, en ningún caso</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note note-ok"><b>La regla que ninguna demo debe romper:</b> la constancia de entrada se envía
+      también al cliente, con su huella. Si el despacho quisiera sellar una mentira, tendría que falsificar
+      además la copia que ya está en manos del autónomo. <b>Eso</b> es lo que convierte esto en una constancia
+      de hecho y no en una promesa de marketing.</div>
+  </section>
+
+  <section id="no-es">
+    <h2><span class="dot"></span>Lo que Billka no es (y no será)</h2>
+    <p class="lead">Estas cinco líneas no son prudencia de folleto: son la frontera que mantiene a Billka fuera del
+      RRSIF y le permite ser complemento del SIF en lugar de competencia. Se firman en el ADR
+      <code>B0012</code> y se respetan en el código.</p>
+
+    <div class="grid g2">
+      <div class="card no"><h4>No emite</h4><p>Ni facturas, ni registros de facturación, ni XML Veri*Factu
+        propio. Emitir es ser SIF (art. 29.2.j LGT) y además activaría la <b>unicidad de facturación</b> del
+        cliente.</p></div>
+      <div class="card no"><h4>No remite</h4><p>Nada a la AEAT. Remitir por cuenta de terceros exige ser
+        colaborador social y firmar los modelos de representación de la Resolución de 18-dic-2024.</p></div>
+      <div class="card no"><h4>No lleva libros ni declara</h4><p>Ni libros registro, ni contabilidad, ni 303,
+        111 o 390. El Informador llama SIF a «reutilizar esos datos para otros productos derivados»; Billka no
+        produce ninguno.</p></div>
+      <div class="card no"><h4>No certifica ni garantiza</h4><p>No es entidad acreditada. <b>Atesta hechos
+        técnicos reproducibles</b>: qué fichero, qué huella, qué fecha, qué comprobaciones y con qué
+        resultado.</p></div>
+      <div class="card no"><h4>No vende «¿consta en la AEAT?»</h4><p>La AEAT ya lo da gratis por QR. Vender eso
+        sería vender un commodity con la caja del vecino.</p></div>
+      <div class="card yes"><h4>Sí verifica el tránsito</h4><p>Entrada, salida, cruce y anclaje. Eso no lo
+        cubre el SIF (solo ve su salida), ni la AEAT (solo ve lo remitido), ni el asesor (solo ve lo que le
+        llega).</p></div>
+    </div>
+
+    <h3>Vocabulario: la palabra importa</h3>
+    <table>
+      <thead><tr><th>No decir</th><th>Decir</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td>«Sello de garantía»</td><td><b>Sello de integridad</b> · <b>constancia verificable</b></td>
+          <td>«Garantía» es promesa de resultado → responsabilidad civil si no se sostiene</td></tr>
+        <tr><td>«Certificamos»</td><td><b>Atestamos</b> un hecho técnico</td>
+          <td>Certificar es de entidades acreditadas; nosotros no lo somos</td></tr>
+        <tr><td>«Queda constatado que es real»</td><td><b>«Coincide y no se ha alterado»</b></td>
+          <td>Lo primero es un juicio de veracidad; lo segundo, un hecho comprobable</td></tr>
+        <tr><td>«Válido a efectos fiscales»</td><td><b>«Comprobaciones realizadas: N de M»</b></td>
+          <td>Lo primero nos convierte en responsables del cumplimiento ajeno</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="quien-paga">
+    <h2><span class="dot"></span>Quién paga y por qué</h2>
+    <p class="lead">No se vende al autónomo: se vende al <b>despacho</b>. El despacho ya tiene la relación, ya cobra
+      y ya recibe los papeles. Billka se injerta en un flujo que existe, no crea uno nuevo. El autónomo recibe su
+      constancia y no paga — pero es lo que da valor al sello, porque es su copia la que impide falsificarlo.</p>
+
+    <table>
+      <thead><tr><th>Comprador</th><th>Qué compra</th><th>Precio orientativo</th><th>Coste de adquisición</th></tr></thead>
+      <tbody>
+        <tr><td><b>Despacho / gestoría</b> (es SIF)</td>
+          <td>Constancia de lo que recibió y de lo que emitió; protección cuando un cliente dice «yo te pasé esa
+            factura»</td>
+          <td>150–400 €/mes por cartera</td>
+          <td>Bajo: se injerta en su flujo mensual</td></tr>
+        <tr><td><b>Autónomo / empresa</b> que delega</td>
+          <td>Sigue siendo responsable aunque delegue; quiere comprobar a su asesor</td>
+          <td>Incluido (copia de cortesía) o 20–40 €/mes</td>
+          <td>Nulo: llega por el despacho</td></tr>
+        <tr><td><b>SIF pequeño / software vertical</b> (NO VERI*FACTU)</td>
+          <td>Su registro de eventos es obligatorio y <b>nadie lo verifica</b>: la AEAT no recibe nada en esa
+            modalidad</td>
+          <td>3–10 k€/año o por auditoría</td>
+          <td>Medio: venta directa B2B</td></tr>
+        <tr><td><b>Perito / comprador / due diligence</b></td>
+          <td>Constancia fechada y reproducible que él mismo puede ejecutar</td>
+          <td>2–10 k€/encargo</td>
+          <td>Alto, pero puntual y de margen alto</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid g3">
+      <div class="card"><h4>La escala está en el despacho</h4>
+        <p>50 despachos × 150 clientes = <b>7.500 empresas</b> cubiertas con 50 ventas. Vender al autónomo uno a
+          uno no es un negocio; vender al despacho, sí.</p></div>
+      <div class="card"><h4>Los incentivos están enfrentados</h4>
+        <p>El autónomo quiere que su gestor no le meta la pata. El gestor quiere demostrar que lo que recibió es
+          lo que emitió. <b>Billka vende la misma constancia a los dos</b>: por eso nadie puede fabricarla.</p></div>
+      <div class="card"><h4>El primer cliente ya existe</h4>
+        <p>El asesor del primer local de Komanda. <b>Komanda abre la puerta, Billka cobra</b>. Mismo
+          <code>fiscal-kit</code>, mismo método, ningún cliente inventado.</p></div>
+    </div>
+
+    <div class="note"><b>Estimaciones, no promesas:</b> las cifras de esta tabla son hipótesis de trabajo con la
+      información disponible hoy, no resultados. Se revisan con el primer piloto y se sustituyen por lo que
+      ocurra de verdad. Un escenario pesimista —20 a 40 despachos— son 1–2 k€/mes: eso no sostiene una empresa, y
+      por eso el piloto de diciembre tiene que decir si el mercado existe antes de escribir más código.</div>
   </section>
 
   <section id="estado">
@@ -191,257 +339,253 @@
       <code>make build</code>, <code>make test</code> y <code>make contracts</code>.</p>
     <div class="kpi">
       <div><div class="n">0</div><div class="l">fuentes Kotlin (los 106 stubs se borraron)</div></div>
-      <div><div class="n">0</div><div class="l">migraciones SQL (V1–V3 decididas, no escritas)</div></div>
+      <div><div class="n">0</div><div class="l">migraciones SQL (esquema sin escribir)</div></div>
       <div><div class="n">0</div><div class="l">tests · <code>make test</code> en rojo a propósito</div></div>
-      <div><div class="n">5</div><div class="l">contratos de evento, todos <code>draft</code></div></div>
-      <div><div class="n">11</div><div class="l">ADRs (<code>B0001</code>–<code>B0011</code>)</div></div>
+      <div><div class="n">5</div><div class="l">contratos <code>draft</code>, aún del modelo «facturador»</div></div>
+      <div><div class="n">12</div><div class="l">ADRs (<code>B0001</code>–<code>B0012</code>)</div></div>
     </div>
     <table>
       <thead><tr><th>Pieza</th><th>Estado</th><th>Qué significa de verdad</th></tr></thead>
       <tbody>
         <tr><td><code>core/</code></td><td><span class="badge b-warn">Vacío pero compila</span></td>
           <td>Gradle wrapper, Kotlin 2.1, JDK 21: <code>make build</code> → <code>BUILD SUCCESSFUL</code>. Sin Ktor,
-          sin Exposed, sin Flyway, sin JWT: <b>no hay servidor</b></td></tr>
+          sin Exposed, sin Flyway: <b>no hay servidor</b></td></tr>
         <tr><td><code>fiscal-kit/</code></td><td><span class="badge b-todo">Vacío a propósito</span></td>
-          <td>Paquete <code>es.billka.fiscal</code> (<code>fiskal</code> corregido). No se escribe una línea hasta
-          tener vectores: sin vectores, la huella y el QR son opiniones</td></tr>
+          <td>Paquete <code>es.billka.fiscal</code>. No se escribe una línea hasta tener vectores: sin vectores, la
+          huella y el cruce son opiniones</td></tr>
         <tr><td><code>contracts/</code></td><td><span class="badge b-warn">Borrador validado</span></td>
           <td>Sobre CloudEvents + 5 eventos con <code>required</code> reales y ejemplos que deben fallar.
-          <code>--draft</code> en verde, estricto en rojo mientras haya borradores</td></tr>
-        <tr><td><code>migrations/</code></td><td><span class="badge b-todo">0 ficheros</span></td>
-          <td>V1 tenancy · V2 factura · V3 cadena, decididas y ordenadas por dependencias, sin escribir</td></tr>
+          <code>--draft</code> en verde, estricto en rojo. <b>Ojo:</b> describen emisión de facturas, que ya no es
+          el producto: se sustituyen en la Etapa C por el modelo de constancias</td></tr>
+        <tr><td>migraciones</td><td><span class="badge b-todo">0 ficheros</span></td>
+          <td>Tenancy → lote/constancia → cadena y cruce → ancla, decididas y ordenadas por dependencias</td></tr>
         <tr><td><code>tests/</code></td><td><span class="badge b-todo">0 tests</span></td>
           <td><code>scripts/test.sh</code> cuenta los tests en los XML de JUnit y falla si son 0: Gradle dice
           «SUCCESSFUL» con 0 tests y ese verde es una mentira</td></tr>
         <tr><td><code>web/</code></td><td><span class="badge b-warn">Portada</span></td>
-          <td>Next 14 sin auth ni cliente HTTP. No se toca hasta que exista API que consumir</td></tr>
+          <td>Next 14 sin auth ni cliente HTTP. La página de verificación pública se hará en la Etapa F</td></tr>
         <tr><td><code>infra/</code></td><td><span class="badge b-ok">Compose probado</span></td>
           <td><code>docker compose config -q</code> OK, secretos con <code>:?</code>, healthcheck
-          <code>pg_isready</code> (<code>Up healthy</code>), límites de memoria. Los Dockerfiles siguen siendo
-          <code>sleep infinity</code></td></tr>
+          <code>pg_isready</code>. Los Dockerfiles siguen siendo <code>sleep infinity</code></td></tr>
         <tr><td><code>scripts/</code></td><td><span class="badge b-ok">Honestos</span></td>
           <td>8 scripts, sintaxis validada. <code>backup.sh</code> hace <code>pg_dump -Fc</code> y verifica con
-          <code>pg_restore --list</code>; el ciclo backup → borrar → restore se probó de verdad. Lo que no está
-          hecho sale con 1</td></tr>
+          <code>pg_restore --list</code>; el ciclo backup → borrar → restore se probó de verdad</td></tr>
         <tr><td>CI</td><td><span class="badge b-todo">Rojo a propósito</span></td>
-          <td><code>ci.yml</code> y <code>contracts.yml</code> existen y fallan mientras no haya tests ni
-          contratos congelados. El motivo está escrito en el propio workflow, no en un ticket</td></tr>
-        <tr><td>Git</td><td><span class="badge b-warn">Sin commit</span></td>
-          <td>Repositorio inicializado y árbol limpio de basura, pero todavía sin primer push: no hay historial
-          que respalde nada</td></tr>
+          <td><code>ci.yml</code> y <code>contracts.yml</code> fallan mientras no haya tests ni contratos
+          congelados, con el motivo escrito dentro del workflow</td></tr>
+        <tr><td>Git</td><td><span class="badge b-ok">Publicado</span></td>
+          <td><code>origin/main</code> al día: licencia propietaria en su propio commit, árbol saneado y
+          documentación. <code>.env</code> fuera del repositorio</td></tr>
       </tbody>
     </table>
-    <div class="note note-warn"><b>Lo que no existe:</b> ni una factura emitida, ni una huella calculada, ni un
-      cotejo real contra la AEAT, ni una firma con SIGN ES, ni una pantalla que haga algo. Cualquier demo hoy
-      sería una maqueta.</div>
+    <div class="note note-warn"><b>Lo que no existe:</b> ni una constancia emitida, ni una huella calculada, ni un
+      cruce real, ni un anclaje, ni una pantalla que haga algo. Cualquier demo hoy sería una maqueta.</div>
   </section>
 
-  <section id="etapas">
-    <h2><span class="dot"></span>Hoja de ruta · ocho etapas, cada una con criterio de salida</h2>
-    <p class="lead">Cada etapa termina en algo <b>comprobable con un comando</b>, no en una sensación. Si el criterio
-      no se cumple, la etapa no está cerrada y la siguiente no empieza. No hay fechas: hay condiciones.</p>
+  <section id="camino">
+    <h2><span class="dot"></span>El camino hasta el 31-12-2026</h2>
+    <p class="lead">Las etapas A (higiene) y B (no mentir) están cerradas. Lo que sigue no es «terminar el
+      producto»: es <b>llegar a un piloto cobrable</b> antes de fin de año, con el mínimo que lo haga defendible.
+      Cada etapa termina en algo <b>comprobable con un comando</b>, no en una sensación.</p>
+
     <div class="legend">
       <span><span class="badge b-ok">Hecha</span> verificada por ejecución</span>
       <span><span class="badge b-info">Siguiente</span> la que toca ahora</span>
       <span><span class="badge b-warn">Pendiente</span> bloqueada por la anterior</span>
     </div>
 
-    <div class="stage done">
-      <div class="head"><span class="id">ETAPA A</span><h4>Higiene: que el árbol diga la verdad</h4>
-        <span class="badge b-ok">Hecha · 10-nov-2026</span></div>
-      <p class="meta">Coste: una sesión corta. Sin ella, todo lo demás se construye sobre ficheros que no existen
-        de verdad.</p>
-      <ul>
-        <li>Repositorio inicializado; 106 stubs <code>.kt</code> de dos líneas (<code>// TODO</code> +
-          <code>export {};</code>, que es TypeScript dentro de Kotlin y no compila) <b>borrados</b>.</li>
-        <li><code>es.billka.fiskal</code> → <code>es.billka.fiscal</code>: 26 rutas, 0 imports, arreglarlo
-          entonces costaba minutos y después una migración de paquete.</li>
-        <li>ADRs renumerados con prefijo <code>B</code> para no colisionar con los de Komanda; <code>B0009</code>
-          queda como puntero de tres líneas al ADR canónico.</li>
-        <li>Gradle wrapper dentro del repositorio: el build no depende de lo que tenga instalado cada
-          máquina.</li>
-      </ul>
-      <div class="exit"><b>Criterio de salida:</b> <code>make build</code> → <code>BUILD SUCCESSFUL</code> y cero
-        ficheros de código que no sean código. Cumplido.</div>
-    </div>
-
-    <div class="stage done">
-      <div class="head"><span class="id">ETAPA B</span><h4>No mentir: scripts, secretos y CI</h4>
-        <span class="badge b-ok">Hecha · 10-nov-2026</span></div>
-      <p class="meta">Un <code>exit 0</code> que no ha hecho nada es peor que un fallo: alguien se apoya en él.
-        ADR <code>B0011</code>.</p>
-      <ul>
-        <li><code>restore.sh</code> salía con 0 diciendo «pendiente». Ahora restaura de verdad y el ciclo
-          <b>tabla → backup → DROP → restore</b> se probó recuperando una fila.</li>
-        <li><code>backup.sh</code> con <code>pg_dump -Fc</code> y verificación posterior con
-          <code>pg_restore --list</code>: un backup que no se puede listar no es un backup.</li>
-        <li><code>contracts/check.py</code> reescrito con validación real de <code>date-time</code> RFC 3339
-          (sin dependencias) y <code>LOCK.json</code> como mapa plano de hashes. <code>--lock</code> se niega a
-          congelar borradores.</li>
-        <li>Secretos con <code>${VAR:?}</code>: sin <code>.env</code> el compose aborta en vez de arrancar con
-          <code>change-me-now</code>. <code>make dev</code> genera secretos aleatorios de forma idempotente.</li>
-        <li><code>--env-file .env</code> en scripts y Makefile: Compose busca el <code>.env</code> junto al
-          compose, no en la raíz del repositorio, y esa diferencia ya rompió un arranque.</li>
-        <li><code>scripts/test.sh</code> cuenta los tests en los XML de JUnit y falla si son 0.</li>
-        <li>CI real (<code>ci.yml</code>, <code>contracts.yml</code>) <b>en rojo</b> mientras no haya tests ni
-          contratos congelados, con el motivo escrito dentro del propio workflow.</li>
-      </ul>
-      <div class="exit"><b>Criterio de salida:</b> ningún script devuelve éxito sin haber hecho su trabajo;
-        <code>docker compose config -q</code> OK; backup y restore probados con datos. Cumplido.</div>
-    </div>
+    <div class="note note-warn"><b>Hasta el 16-nov-2026, Billka no se toca.</b> Komanda tiene entrega el
+      16-nov y seis días de trabajo por delante. Escribir aquí una línea antes de esa fecha es restar horas al
+      compromiso que ya existe con el primer local. Este documento se escribe hoy precisamente para que el 17-nov
+      no haya que decidir nada: solo ejecutar.</div>
 
     <div class="stage next">
-      <div class="head"><span class="id">ETAPA C</span><h4>Esquema y arnés de tests</h4>
-        <span class="badge b-info">Siguiente</span></div>
-      <p class="meta">Aquí empieza el código real, y empieza por la base de datos porque todo lo demás se apoya en
-        ella. Todavía <b>sin lógica fiscal</b>: solo el mecanismo.</p>
+      <div class="head"><span class="id">ETAPA C</span><h4>Formato de lote y <code>fiscal-kit</code> mínimo</h4>
+        <span class="week">17–23 nov</span> <span class="badge b-info">Siguiente</span></div>
+      <p class="meta">Lo primero no es un servidor: es el formato. Si el formato está mal, todo lo demás hay que
+        rehacerlo. Aquí no hay Postgres, ni Ktor, ni pantallas.</p>
       <ul>
-        <li><code>V1__tenancy.sql</code> — <code>pgcrypto</code>, <code>current_tenant_id()</code> leyendo
-          <code>current_setting('app.tenant_id', true)</code>, <code>enable_tenant_rls('tabla')</code> con
-          <code>FORCE ROW LEVEL SECURITY</code> y <code>USING</code> + <code>WITH CHECK</code>. Roles separados
-          <code>billka_owner</code> y <code>billka_app</code> (este último sin <code>BYPASSRLS</code>).</li>
-        <li><code>V2__invoice.sql</code> — <code>invoice_series</code>, <code>invoice</code>,
-          <code>invoice_line</code>: numeración atómica por serie, importes en <code>*_cents</code>, snapshot de
-          emisor y receptor, y trigger que impide modificar una factura ya emitida.</li>
-        <li><code>V3__chain.sql</code> — <code>chain_entry</code> (<code>seq</code>, <code>prev_hash</code>,
-          <code>hash</code>), triggers <i>no update / no delete</i>, <code>verify_chain()</code> y tabla de
-          anclajes.</li>
-        <li><code>tests/db/run.sh</code> — base de datos limpia, migración como dueño y pruebas como usuario de
-          aplicación. Es el mismo patrón ya probado en Komanda.</li>
+        <li><b>Formato de lote</b> (el «expediente»): <code>manifest.json</code> + ficheros originales. El
+          manifest declara emisor del lote, receptor, periodo, lista de ficheros con su SHA-256, y la huella del
+          manifest. Un lote sin manifest no entra.</li>
+        <li><b>Huella canónica</b>: normalización explícita (UTF-8, LF, orden fijo de campos, importes en
+          céntimos) antes de calcular SHA-256. Sin normalización escrita, dos máquinas dan dos huellas.</li>
+        <li><b>Encadenado</b>: portar el mecanismo ya probado en Komanda (<code>V4</code> cadena +
+          <code>chain_anchor</code>, <code>V17</code> sello diario) a una librería pura, sin SQL ni framework.</li>
+        <li><b>Vectores</b>: 6 casos con <code>entrada → huella esperada</code> congelada por hash, incluidos
+          los que deben fallar (fichero cambiado, manifest sin huella, codificación distinta).</li>
+        <li><b>Sustituir los 5 contratos</b> del modelo «facturador» por los del modelo de constancias:
+          <code>lote.recibido</code>, <code>lote.sellado</code>, <code>cruce.realizado</code>,
+          <code>ancla.publicada</code> y <code>constancia.emitida</code>.</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> <code>make test</code> deja de estar rojo porque existen tests
-        reales y pasa: RLS fail-closed (un tenant no ve ni escribe filas de otro, y sin contexto no ve nada),
-        numeración sin duplicados con dos conexiones concurrentes, y <code>verify_chain()</code> detecta una fila
-        manipulada. <b>Aquí no se hace:</b> ni API, ni interfaz, ni la huella fiscal definitiva (esa la fija la
-        Etapa D).</div>
+      <div class="exit"><b>Criterio de salida:</b> <code>./gradlew :fiscal-kit:test</code> verde contra los 6
+        vectores, con <b>cero</b> dependencias de servidor o base de datos; la misma entrada produce la misma
+        huella en dos máquinas distintas. <b>Aquí no se hace:</b> ni cruce, ni anclaje, ni API.</div>
     </div>
 
     <div class="stage later">
-      <div class="head"><span class="id">ETAPA D</span><h4>Vectores fiscales, antes de la implementación</h4>
-        <span class="badge b-warn">Pendiente</span></div>
-      <p class="meta">Es la etapa que casi todo el mundo se salta y la que después no se puede recuperar. Sin
-        vectores, la implementación no es verificable: solo es defendible con la palabra de quien la escribió.</p>
+      <div class="head"><span class="id">ETAPA D</span><h4><code>billka sellar</code> y <code>billka verificar</code></h4>
+        <span class="week">24–30 nov</span> <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">La prueba de que el producto existe es un binario que un tercero puede ejecutar. Sin base de
+        datos: la constancia es un fichero firmado, no una fila privilegiada.</p>
       <ul>
-        <li>Fixtures <code>entrada → esperado</code> (huella, QR, XML VeriFactu, eslabón de cadena) con
-          procedencia documentada: spec, criterio de la AEAT o la implementación ya existente de Komanda.</li>
-        <li>Casos límite obligatorios: NIF con letra, operación exenta, recargo de equivalencia, varias líneas con
-          redondeo, rectificativa, y territorio foral (común / País Vasco / Navarra, ADR <code>B0008</code>).</li>
-        <li>Congelados por hash, igual que los contratos: si un vector cambia, se ve en el diff y hay que
-          justificarlo.</li>
+        <li><code>billka sellar lote/</code> → produce <code>constancia.json</code> (huella del lote, fecha,
+          autor, versión del formato) y su firma. Nada más.</li>
+        <li><code>billka verificar constancia.json lote/</code> → <b>recalcula</b> la huella desde los ficheros
+          originales y sale con 0 o 1. No consulta nuestra base de datos: si la necesitara, no sería verificable
+          por un tercero.</li>
+        <li><b>Test obligatorio de manipulación</b>: se cambia un dígito de una fila del CSV original y
+          <code>verificar</code> devuelve <b>1</b> con el fichero y la línea exacta. Este test es el argumento de
+          venta entero.</li>
+        <li>Salida legible para un humano, no solo para un log: qué se comprobó, cuántas de cuántas, qué
+          falló.</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> un conjunto de vectores congelados, con su <code>expected</code>
-        y su procedencia, que cualquiera pueda leer sin ejecutar código. En los casos compartidos con Komanda, el
-        resultado debe ser <b>idéntico</b>. <b>Aquí no se hace:</b> ninguna implementación.</div>
+      <div class="exit"><b>Criterio de salida:</b> un compañero sin contexto ejecuta <code>verificar</code> sobre
+        un lote que no ha visto y <b>detecta correctamente</b> la fila manipulada. Si necesita preguntarte algo,
+        el comando está mal diseñado. <b>Aquí no se hace:</b> ni cruce, ni anclaje, ni web.</div>
     </div>
 
     <div class="stage later">
-      <div class="head"><span class="id">ETAPA E</span><h4><code>fiscal-kit</code> contra los vectores</h4>
-        <span class="badge b-warn">Pendiente</span></div>
-      <p class="meta">El corazón del producto y lo que después no se puede improvisar. Librería pura: sin
-        servidor, sin base de datos, sin framework.</p>
+      <div class="head"><span class="id">ETAPA E</span><h4>El cruce: entrada contra salida</h4>
+        <span class="week">1–7 dic</span> <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">Es la única pieza que ninguna de las dos partes puede fabricar sola, y por eso es el corazón
+        del producto. Todo lo anterior era prerrequisito: ahora aparece el valor.</p>
       <ul>
-        <li>Huella SHA-256 con el orden de campos que manda la especificación, QR de verificación, XML, validación
-          de NIF y territorios, y encadenado con anclajes.</li>
-        <li>Adaptadores aislados: SIGN ES y cotejo AEAT detrás de una interfaz, para que el dominio no dependa de
-          un proveedor ni de una URL.</li>
-        <li>Sin credenciales en el repositorio: el sandbox se inyecta por entorno y los tests de red no corren en
-          CI.</li>
+        <li>Emparejar por clave compuesta (NIF emisor + número + fecha) y comparar importes al céntimo.</li>
+        <li>Clasificar cada línea en uno de cuatro estados: <b>coincide</b>, <b>ausente en salida</b>,
+          <b>ausente en entrada</b>, <b>discrepante</b> (con el campo y los dos valores).</li>
+        <li>Duplicados detectados <b>antes</b> de cruzar: la misma factura entregada dos veces es un hallazgo,
+          no un error del programa.</li>
+        <li>Informe en CSV y en texto para presentar a un cliente, no en JSON crudo.</li>
+        <li>La primera ejecución será sobre una cartera real del despacho piloto: los desajustes aparecerán y
+          se documentan tal cual, sin maquillar.</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> <code>./gradlew :fiscal-kit:test</code> en verde contra
-        <b>todos</b> los vectores de la Etapa D, y CERO dependencias de servidor o de base de datos en el módulo.
-        Si un vector no pasa, se discute el vector antes de tocar el código.</div>
+      <div class="exit"><b>Criterio de salida:</b> sobre un lote real de un mes, el cruce explica el
+        <b>100 %</b> de las líneas: o coincide, o está clasificada con motivo. Cero líneas «no sé».
+        <b>Aquí no se hace:</b> ni anclaje externo, ni portal.</div>
     </div>
 
     <div class="stage later">
-      <div class="head"><span class="id">ETAPA F</span><h4>Contratos congelados y servidor con dos endpoints</h4>
-        <span class="badge b-warn">Pendiente</span></div>
-      <p class="meta">Los contratos se congelan <b>antes</b> del primer consumidor: en cuanto alguien depende de un
-        evento, cada cambio cuesta una migración. El servidor llega cuando el esquema, los vectores y los
-        contratos ya están decididos.</p>
+      <div class="head"><span class="id">ETAPA F</span><h4>Ancla externa y verificación pública</h4>
+        <span class="week">8–14 dic</span> <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">Sin tercero, el sello es auto-referencia: «fíate de mí» con pasos extra. El ancla es lo que
+        convierte una promesa en un hecho comprobable por cualquiera, incluso por quien no es cliente.</p>
       <ul>
-        <li>Pasar los 5 eventos de <code>draft</code> a versión publicada, actualizar <code>LOCK.json</code> y
-          poner <code>make contracts</code> en verde estricto.</li>
-        <li>Ktor con lo mínimo: <code>POST /invoices</code>, <code>GET /health</code> y verificación de cadena. La
-          huella se calcula dentro de la transacción, con el número ya asignado.</li>
-        <li>Outbox en la misma transacción que la factura: si no hay commit no hay evento, y si falla la
-          publicación se reintenta.</li>
+        <li>Hash raíz diario de todas las constancias del día → sello de tiempo <b>RFC 3161</b> de una TSA
+          reconocida (o, si falla, publicación en un medio ajeno a nuestra infraestructura).</li>
+        <li>Página pública: <code>/v/{codigo}</code> devuelve la constancia y <b>el resultado de la
+          verificación</b>, sin login y sin datos personales de más.</li>
+        <li>La página dice siempre lo mismo: qué se comprobó, cuándo y con qué resultado. <b>Nunca</b> «válido»,
+          «garantizado» ni «certificado».</li>
+        <li>Si la TSA no responde, el estado es <code>pendiente</code> y se muestra: un fallo publicado, no un
+          silencio optimista (ADR <code>B0011</code>).</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> <code>make contracts</code> en verde estricto y un
-        <code>make e2e</code> real que emita una factura contra la API, la lea de vuelta y verifique la cadena
-        completa. Los dos dejan de salir con <code>exit 1</code> porque ya hacen algo.</div>
+      <div class="exit"><b>Criterio de salida:</b> una persona ajena abre la URL de una constancia y comprueba la
+        cadena completa sin instalar nada nuestro y sin que le expliques nada. <b>Aquí no se hace:</b> ni OCR de
+        papel, ni portal multiempresa, ni integraciones con SIF.</div>
     </div>
 
     <div class="stage later">
-      <div class="head"><span class="id">ETAPA G</span><h4>Interfaz: emitir, verificar, cotejar</h4>
-        <span class="badge b-warn">Pendiente</span></div>
-      <p class="meta">La web se escribe cuando hay algo que mostrar. Antes es decorado que hay que rehacer.</p>
+      <div class="head"><span class="id">ETAPA G</span><h4>Piloto real: un despacho, 3–5 clientes</h4>
+        <span class="week">15–21 dic</span> <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">El piloto no valida tecnología: valida que alguien <b>pague</b> y que el flujo encaje en su
+        mes. Se hace con el asesor del primer local de Komanda, que ya conoce el producto por dentro.</p>
       <ul>
-        <li>Autenticación y contexto de tenant; el RLS no se relaja por comodidad de la interfaz.</li>
-        <li>Emisión de factura, listado, detalle con su huella y vista de cadena con su estado de verificación.</li>
-        <li>Página pública de verificación del QR: el receptor comprueba sin cuenta y sin instalar nada.</li>
-        <li>Cotejo bajo demanda con su estado visible: <code>done</code>, <code>not_found</code>,
-          <code>unavailable</code>. Nunca un «OK» optimista.</li>
+        <li>Un mes completo de una cartera pequeña: entrada, salida, cruce y ancla, con los ficheros que el
+          despacho usa de verdad (Excel incluido).</li>
+        <li>Medir lo único que importa: <b>cuánto tiempo cuesta</b> preparar el lote y <b>cuántos desajustes
+          reales</b> aparecen. Si preparar el lote cuesta más que el valor que aporta, el producto no existe.</li>
+        <li>Precio sobre la mesa: propuesta escrita de 150–400 €/mes por cartera, con qué incluye y qué no.</li>
+        <li>Constancia de cortesía al autónomo, con su copia: es lo que prueba que el sello no es del despacho.</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> emitir desde la interfaz, verificar el QR desde un móvil sin
-        login, y que la pantalla muestre el mismo estado que devuelve la API.</div>
+      <div class="exit"><b>Criterio de salida:</b> un despacho termina el mes con constancia emitida y
+        <b>dice por escrito si pagaría</b> (sí, no, o cuánto). Un «no» a tiempo vale más que un «quizá» en
+        marzo.</div>
     </div>
 
     <div class="stage later">
-      <div class="head"><span class="id">ETAPA H</span><h4>Infraestructura real y operación</h4>
-        <span class="badge b-warn">Pendiente</span></div>
-      <p class="meta">El compose ya es serio; lo que falta es lo que va dentro de las imágenes y lo que se hace a
-        las tres de la mañana.</p>
+      <div class="head"><span class="id">ETAPA H</span><h4>Cerrar <code>B0012</code> con datos, no con opiniones</h4>
+        <span class="week">22–31 dic</span> <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">El ADR se escribe hoy en su parte decidida; su parte empírica se cierra con lo que devuelva
+        el piloto. Un ADR que no cambia con la realidad es propaganda con formato de decisión.</p>
       <ul>
-        <li>Dockerfiles multi-stage de verdad (JVM y Next <code>standalone</code>), usuario sin privilegios, sin
-          secretos en capas.</li>
-        <li>Despliegue con <code>deploy.sh</code> dejando de abortar: destino, verificación de salud y vuelta
-          atrás.</li>
-        <li>Backups automáticos con verificación y <b>un restore ensayado</b> en calendario, no solo probado una
-          vez.</li>
-        <li>Métricas mínimas: emisiones, fallos de cadena, anclajes pendientes, cotejos no disponibles.</li>
+        <li>Actualizar <code>B0012</code> con lo aprendido: qué desajustes aparecen, qué cuesta preparar el
+          lote, qué pidió el despacho que no estaba previsto.</li>
+        <li>Decisión explícita <b>ir / no ir</b> para 2027, con el criterio numérico escrito antes de mirar el
+          resultado.</li>
+        <li>Si es «no ir»: el código queda como herramienta interna de Komanda y se dice sin drama. Habrá
+          costado dos semanas, no dos años.</li>
       </ul>
-      <div class="exit"><b>Criterio de salida:</b> un despliegue completo desde cero con un comando, un restore
-        ensayado sin el desarrollador delante, y una alerta que llegue cuando un anclaje no se sella.</div>
+      <div class="exit"><b>Criterio de salida:</b> <code>B0012</code> actualizado con cifras del piloto y una
+        decisión firmada para 2027, con el mismo estándar de honestidad que el resto del repositorio.</div>
     </div>
 
-    <div class="note"><b>Por qué este orden y no otro:</b> el esquema primero porque cambiarlo después obliga a
-      reescribir contratos y tests; los vectores antes del código porque sin ellos la implementación no es
-      verificable; los contratos antes del primer consumidor porque después cada cambio cuesta una migración; y la
-      interfaz al final porque es lo único que se puede rehacer sin tocar la evidencia. Empezar por el QR o por la
-      pantalla bonita es el camino con más retrabajo.</div>
+    <div class="note note-warn"><b>Fuera de 2026, a propósito:</b> OCR de papel, portal multiempresa con usuarios
+      y permisos, integraciones directas con SIF de terceros, cobro con Stripe y multi-tenant completo. Cada una
+      de esas piezas multiplica el trabajo y <b>ninguna</b> es necesaria para saber si el mercado existe.
+      Añadirlas antes del piloto sería construir el edificio para probar si hay cimientos.</div>
+
+    <div class="note"><b>Por qué este orden y no otro:</b> el formato antes del código porque cambiarlo después
+      invalida todo lo sellado; el verificador antes del cruce porque sin él no hay nada que verificar; el cruce
+      antes del ancla porque un ancla de algo que no cuadra solo fija un error; el piloto antes del portal porque
+      el portal no convence a nadie de pagar. Empezar por la pantalla bonita es el camino con más retrabajo.</div>
   </section>
 
   <section id="riesgos">
-    <h2><span class="dot"></span>Riesgos y decisiones abiertas</h2>
-    <p class="lead">Lo que puede invalidar el producto no es técnico. Está aquí para que no aparezca por sorpresa en
-      una reunión.</p>
+    <h2><span class="dot"></span>Riesgos aceptados por escrito</h2>
+    <p class="lead">Lo que puede invalidar este producto no es técnico. Está aquí para que no aparezca por
+      sorpresa en una reunión, y para que la decisión de seguir sea consciente.</p>
     <table>
       <thead><tr><th>Riesgo</th><th>Estado</th><th>Cómo se gestiona</th></tr></thead>
       <tbody>
-        <tr><td>Confundir Billka con un SIF homologado</td><td><span class="badge b-todo">Abierto</span></td>
-          <td>Texto de producto y README dicen explícitamente lo contrario (ADR <code>B0007</code>); ninguna
-          pantalla promete cumplimiento normativo</td></tr>
-        <tr><td>Cambios normativos de VeriFactu / SIF</td><td><span class="badge b-warn">Vigilar</span></td>
-          <td><code>fiscal-kit</code> aísla formato y huella; los vectores congelados hacen visible el impacto de
-          un cambio</td></tr>
-        <tr><td>Cotejo AEAT: disponibilidad y condiciones de acceso</td>
-          <td><span class="badge b-warn">Vigilar</span></td>
-          <td>Puntual y bajo demanda; <code>unavailable</code> es un estado de primera clase, no un error
-          escondido</td></tr>
-        <tr><td>Firma con SIGN ES: tercero y credenciales del cliente</td>
-          <td><span class="badge b-warn">Vigilar</span></td>
-          <td>Adaptador detrás de interfaz (ADR <code>B0003</code>); sin credenciales en el repositorio; la firma
-          es opcional por diseño</td></tr>
-        <tr><td>Licencia y visibilidad del repositorio</td><td><span class="badge b-warn">Mitigado</span></td>
-          <td>ADR <code>B0010</code>: la licencia propietaria ya está publicada en su propio commit, así que los
-          commits nuevos no caen bajo la Unlicense anterior. Queda una casilla barata: pasar el repositorio
-          a privado, sin reescribir historial</td></tr>
-        <tr><td>Una factura con la cadena rota por un fallo de Billka</td>
+        <tr><td><b>Auto-referencia</b>: Billka sella y Billka verifica</td>
           <td><span class="badge b-todo">Abierto</span></td>
-          <td>Los anclajes son el seguro: un tramo sellado no se puede reescribir sin que se note. Exige ensayar
-          el restore y la verificación, no solo el backup</td></tr>
+          <td>Ancla en un tercero (RFC 3161), verificador ejecutable por el cliente sobre ficheros que nunca
+          pasaron por nuestro servidor, y especificación del formato publicada</td></tr>
+        <tr><td><b>Responsabilidad civil</b> por un juicio técnico</td>
+          <td><span class="badge b-todo">Abierto</span></td>
+          <td>Vocabulario cerrado (nunca «garantía», «certificación», «real»); la constancia dice qué se
+          comprobó y qué no; un aviso legal explícito de que no sustituye al SIF ni a la AEAT</td></tr>
+        <tr><td><b>Prórroga normativa</b>: el calendario se mueve otra vez</td>
+          <td><span class="badge b-warn">Vigilar</span></td>
+          <td>El calendario publicado apunta a 2027 (sociedades y autónomos, con fechas distintas) y ya ha
+          cambiado una vez. <b>El producto no se apoya en la fecha</b>: la constancia de entrega tiene valor hoy,
+          con o sin obligación</td></tr>
+        <tr><td><b>El SIF absorbe la función</b>: un proveedor grande añade «sello de entrega»</td>
+          <td><span class="badge b-warn">Vigilar</span></td>
+          <td>El hueco es el despacho pequeño con dos o tres programas distintos y sin departamento de TI. La
+          independencia es la ventaja: quien vende el SIF no puede avalar al que lo usa</td></tr>
+        <tr><td><b>El despacho sella una mentira</b></td>
+          <td><span class="badge b-ok">Mitigado</span></td>
+          <td>La constancia de entrada se envía también al autónomo al generarse. Falsificar exige falsificar dos
+          copias en manos distintas</td></tr>
+        <tr><td><b>Preparar el lote cuesta más que el valor</b></td>
+          <td><span class="badge b-todo">Abierto</span></td>
+          <td>Se mide en el piloto con un umbral escrito antes: si preparar un mes cuesta más de lo que el
+          despacho ahorra en discusiones, el producto no existe y se dice</td></tr>
+        <tr><td><b>La AEAT no reconoce constancias privadas</b></td>
+          <td><span class="badge b-warn">Asumido</span></td>
+          <td>El comprador no es la AEAT: es el despacho (que necesita defenderse de su cliente), el perito y el
+          comprador en una due diligence. No se promete eficacia ante la Administración</td></tr>
+        <tr><td><b>Dependencia de la autoridad de sellado</b></td>
+          <td><span class="badge b-warn">Vigilar</span></td>
+          <td>Dos proveedores de TSA y una vía alternativa de publicación. Si ninguno responde, el estado es
+          <code>pendiente</code> y se publica como tal</td></tr>
+        <tr><td><b>Confundir Billka con un SIF</b> y arrastrar la unicidad de facturación</td>
+          <td><span class="badge b-ok">Mitigado</span></td>
+          <td>ADR <code>B0012</code>: cinco prohibiciones explícitas y una frase que no se usa en ninguna
+          pantalla. Ninguna función nueva entra si cruza esa línea</td></tr>
+        <tr><td><b>Licencia y visibilidad</b> del repositorio</td>
+          <td><span class="badge b-warn">Mitigado</span></td>
+          <td>ADR <code>B0010</code>: licencia propietaria publicada en su propio commit. Queda una casilla
+          barata: pasar el repositorio a privado, sin reescribir historial</td></tr>
       </tbody>
     </table>
+
+    <div class="note note-warn"><b>El riesgo que de verdad mata esto:</b> que nadie pague. Todo lo demás tiene
+      arreglo técnico. Por eso el camino dedica la última quincena del año a una pregunta que no es de
+      programación: <b>¿este despacho firma un precio?</b> Si la respuesta es no, no hay producto — hay una
+      herramienta interna muy elegante.</div>
   </section>
 
   <section id="comprobarlo">
@@ -457,7 +601,7 @@ make contracts    # FALLA: quedan 5 contratos en draft y --lock no congela borra
 python3 contracts/check.py --draft   # OK: valida de verdad y avisa de los 5 borradores
 docker compose -f infra/docker/docker-compose.yml --env-file .env config -q   # silencio = válido
 ./scripts/backup.sh && ./scripts/restore.sh    # backup verificado + restore real
-git log --oneline -3 # licencia, árbol saneado y esta corrección</code></pre>
+git log --oneline -4 # licencia, árbol saneado, documentación y este cambio de rumbo</code></pre>
     <div class="grid g3">
       <div class="card"><h4>Lo que está probado</h4><p>Build, validación de contratos en modo borrador,
         <code>compose config</code>, backup y restore con datos reales, y los 8 scripts con sintaxis
@@ -465,23 +609,33 @@ git log --oneline -3 # licencia, árbol saneado y esta corrección</code></pre>
       <div class="card"><h4>Lo que está en rojo a propósito</h4><p><code>make test</code>,
         <code>make contracts</code> estricto, <code>make seed</code>, <code>make e2e</code> y el CI. Cada uno
         explica en su salida por qué falla.</p></div>
-      <div class="card"><h4>Lo que no existe</h4><p>Facturas, huellas, QR, cotejos, firmas y pantallas
+      <div class="card"><h4>Lo que no existe</h4><p>Constancias, huellas, cruces, anclajes y pantallas
         funcionales. Ninguna demo es posible todavía sin maqueta.</p></div>
     </div>
+
+    <div class="note"><b>Cómo será la prueba cuando exista el producto:</b> <code>billka verificar</code> es lo
+      único que un cliente tendrá que creerse — y no tendrá que creérselo, porque lo ejecuta él sobre sus
+      ficheros. Ese es el diseño: <b>la confianza no se pide, se hace innecesaria</b>.</div>
   </section>
 
   <section id="documentos">
     <h2><span class="dot"></span>Documentos hermanos</h2>
-    <p class="lead">Esta página cuenta el producto y el orden; el detalle técnico vive en el repositorio.</p>
+    <p class="lead">Esta página cuenta el producto y el orden; el detalle técnico y legal vive en el repositorio.</p>
     <table>
       <thead><tr><th>Documento</th><th>Qué contiene</th></tr></thead>
       <tbody>
-        <tr><td><code>ARCHITECTURE.md</code></td><td>Componentes, flujo de una factura, modelo de datos V1–V3,
-          tenancy con RLS y decisiones, con el estado real de cada pieza</td></tr>
-        <tr><td><code>docs/adr/B0001</code>–<code>B0011</code></td><td>Una decisión por ADR, con contexto,
-          alternativas y consecuencias</td></tr>
+        <tr><td><code>docs/adr/B0012-billka-verifica-no-emite.md</code></td><td>La decisión que ordena todo lo
+          demás: qué es Billka, las cinco prohibiciones, por qué el registro de eventos ajeno es el objeto de
+          producto y por qué el cotejo AEAT baja a utilidad</td></tr>
+        <tr><td><code>docs/adr/B0007</code> · <code>B0008</code> · <code>B0009</code></td><td>No colaborador
+          social · territorios forales · separación de Komanda. Los tres siguen vigentes y ahora con más
+          fundamento</td></tr>
+        <tr><td><code>docs/fiscal/cotejo-aeat.md</code></td><td>Qué se puede y qué no se puede cotejar contra la
+          AEAT, y por qué el QR público degrada el cotejo a fuente secundaria</td></tr>
+        <tr><td><code>ARCHITECTURE.md</code></td><td>Componentes, flujo de un lote, modelo de datos, tenancy con
+          RLS y decisiones, con el estado real de cada pieza</td></tr>
         <tr><td><code>docs/contracts/event-model.md</code> · <code>versioning.md</code></td><td>Eventos de
-          dominio, outbox y reglas de versionado de contratos</td></tr>
+          dominio, outbox y reglas de versionado. El modelo de eventos se sustituye en la Etapa C</td></tr>
         <tr><td><code>docs/runbook/backup-restore.md</code></td><td>Procedimiento de backup verificado y restore
           ensayado</td></tr>
         <tr><td><code>billka_auditoria_2026-11-08.html</code></td><td>Auditoría del scaffold del 8-nov, previa al
@@ -492,9 +646,9 @@ git log --oneline -3 # licencia, árbol saneado y esta corrección</code></pre>
 </main>
 <footer>
   <div class="wrap">
-    Billka · integridad fiscal verificable · presentación y hoja de ruta · 10-nov-2026<br>
-    Estado verificado por ejecución, no por lectura. Documento hermano de
-    <a href="billka_auditoria_2026-11-08.html">la auditoría del scaffold (8-nov-2026)</a>.
+    Billka · el sello de la frontera fiscal · presentación y camino · 10-nov-2026<br>
+    Verifica, no emite. Atesta hechos técnicos, no cumplimiento. Estado verificado por ejecución, no por lectura.<br>
+    Documento hermano de <a href="billka_auditoria_2026-11-08.html">la auditoría del scaffold (8-nov-2026)</a>.
   </div>
 </footer>
 </body>
