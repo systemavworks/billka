@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billka — dossier para despachos y gestorías</title>
+<meta name="description" content="Qué hace Billka por un despacho, explicado sin tecnicismos: deja por escrito lo que el cliente entregó, comprueba que lo que entró en el programa es lo mismo, y permite demostrarlo años después sin depender de nadie. Sin precios todavía: piloto.">
+<style>
+  :root{
+    --bg:#fbfaf8; --panel:#ffffff; --panel2:#f5f2ee; --ink:#1f2328; --muted:#6f6a63;
+    --line:#eae5de; --brand:#b45f2e; --brand2:#8a4a24; --ok:#2e7d5b; --warn:#a9750f;
+    --todo:#b23a2e; --info:#2b6cb0; --violet:#6b46c1;
+    --radius:16px; --shadow:0 1px 2px rgba(40,32,24,.04),0 10px 30px rgba(40,32,24,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.65;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif}
+  a{color:var(--info);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+  header{padding:56px 0 34px;background:linear-gradient(180deg,#ffffff,#fbfaf8);border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:36px;letter-spacing:-.6px;font-weight:650}
+  h1 .k{color:var(--brand)}
+  .sub{color:var(--muted);margin-top:8px;font-size:15px;letter-spacing:.02em}
+  .brand{display:flex;align-items:center;gap:20px}
+  .brand .logo{height:88px;width:auto;flex:0 0 auto;border-radius:14px;
+    filter:drop-shadow(0 8px 18px rgba(40,32,24,.16))}
+  @media(max-width:600px){.brand{gap:14px}.brand .logo{height:60px}h1{font-size:27px}}
+  .tagline{margin-top:22px;background:var(--panel);border:1px solid var(--line);
+    border-left:3px solid var(--brand);padding:16px 20px;border-radius:12px;box-shadow:var(--shadow);
+    font-size:16.5px;color:#33302c}
+  main{padding:10px 0 70px}
+  section{padding:32px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  h2{font-size:22px;margin:0 0 6px;font-weight:640;display:flex;align-items:center;gap:11px;letter-spacing:-.2px}
+  h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--brand);flex:0 0 auto}
+  h3{font-size:16.5px;margin:24px 0 8px;font-weight:640}
+  p.lead{color:var(--muted);margin:0 0 18px;font-size:15.5px;max-width:860px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 8px;font-size:15.5px;font-weight:640}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14.5px}
+  .card li{margin:5px 0}
+  .card .why{margin-top:10px;font-size:13px;color:#7a736b}
+  .card.yes{border-left:3px solid var(--ok)} .card.yes h4{color:var(--ok)}
+  .card.no{border-left:3px solid var(--todo)} .card.no h4{color:var(--todo)}
+  .card.big{border-left:3px solid var(--brand)}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  th,td{text-align:left;padding:12px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+  .b-ok{background:#eaf6f0;color:var(--ok);border:1px solid #cfe9dd}
+  .b-warn{background:#fbf3e2;color:var(--warn);border:1px solid #efe0bd}
+  .b-todo{background:#fbeceb;color:var(--todo);border:1px solid #efd3cf}
+  .b-info{background:#eaf1fb;color:var(--info);border:1px solid #cfe0f4}
+  code{background:#f3f0ec;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;color:#5a5049}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--violet);
+    border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:14.5px;color:#33302c;margin:16px 0}
+  .note b{color:var(--violet)}
+  .note-warn{border-left-color:var(--todo)} .note-warn b{color:var(--todo)}
+  .note-ok{border-left-color:var(--ok)} .note-ok b{color:var(--ok)}
+  .note-brand{border-left-color:var(--brand)} .note-brand b{color:var(--brand2)}
+  .quote{border-left:3px solid var(--info);background:#eaf1fb;border-radius:10px;padding:14px 18px;
+    font-size:15px;color:#26364a;margin:12px 0}
+  .quote i{color:#55677a;font-style:normal}
+  .quote .who{display:block;margin-top:8px;font-size:12.5px;color:#5c6f85;letter-spacing:.04em}
+  .scene{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);border-top:3px solid var(--todo)}
+  .scene .day{font-size:12px;letter-spacing:.08em;color:var(--todo);font-weight:700;text-transform:uppercase}
+  .scene .say{font-size:15.5px;font-weight:600;margin:6px 0 8px;color:#2b2723}
+  .scene p{margin:0;color:var(--muted);font-size:14.5px}
+  .scene p + p{margin-top:8px}
+  .scene .res{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px;color:#3d3730}
+  .scene .res b{color:var(--ok)}
+  .check{list-style:none;padding:0;margin:8px 0}
+  .check li{position:relative;padding-left:28px;margin:9px 0;color:#3d3730;font-size:15px}
+  .check li::before{content:"\2610";position:absolute;left:0;top:-1px;font-size:17px;color:var(--brand)}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;
+    padding:3px 12px;font-size:12.5px;color:var(--muted);margin:0 6px 6px 0}
+  details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:0;box-shadow:var(--shadow);margin:14px 0;overflow:hidden}
+  summary{cursor:pointer;padding:16px 20px;font-weight:640;font-size:15.5px;background:var(--panel2);list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"\25B8  ";color:var(--brand);font-weight:700}
+  details[open] summary::before{content:"\25BE  "}
+  details .inner{padding:8px 20px 20px}
+  details .inner p,details .inner li{font-size:14.5px;color:#3d3730}
+  .cta{background:linear-gradient(180deg,#fff,#fdf8f3);border:1px solid #efdccb;border-left:4px solid var(--brand);
+    border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);margin:18px 0}
+  .cta h3{margin:0 0 8px;font-size:18px;color:var(--brand2)}
+  .cta p{margin:0;color:#3d3730;font-size:15px}
+  .cta ol{margin:12px 0 0;padding-left:22px;color:#3d3730;font-size:15px}
+  .cta li{margin:6px 0}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+  .toc a{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;
+    font-size:13px;color:#4a443d;box-shadow:var(--shadow)}
+  .toc a:hover{border-color:var(--brand);color:var(--brand2);text-decoration:none}
+  footer{padding:32px 0 54px;color:var(--muted);font-size:13px;text-align:center}
+  footer .mini{font-size:12px;color:#8b857d;margin-top:6px}
+  .kpi{display:flex;gap:34px;flex-wrap:wrap;margin:10px 0}
+  .kpi .n{font-size:26px;font-weight:680;letter-spacing:-.5px;color:var(--brand2)}
+  .kpi .l{color:var(--muted);font-size:13px}
+  pre{background:#f3f0ec;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;
+    font-size:12.5px;color:#3d3730;margin:10px 0;line-height:1.55;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre code{background:none;border:none;padding:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <img class="logo" alt="Billka" src="logo_billka.jpeg">
+      <div>
+        <h1><span class="k">Billka</span> — el resguardo de lo que tu cliente te entregó</h1>
+        <div class="sub">Dossier para despachos y gestorías · explicado sin tecnicismos · 10-nov-2026</div>
+      </div>
+    </div>
+    <div class="tagline">Tú ya haces el trabajo. Billka deja <b>por escrito que lo hiciste</b>, con qué documentos
+      y qué encontraste. Sin cambiar de programa, sin pedirle nada raro a tu cliente y sin depender de que alguien
+      se acuerde dentro de cuatro años de qué se recibió en noviembre.</div>
+    <div class="toc">
+      <a href="#en-cristiano">En cristiano</a>
+      <a href="#quitar">Lo que te quita de encima</a>
+      <a href="#constancias">Las cuatro constancias</a>
+      <a href="#mes">Tu mes, paso a paso</a>
+      <a href="#decir">Qué decir en una reunión</a>
+      <a href="#autodiagnostico">Autodiagnóstico</a>
+      <a href="#objeciones">Objeciones</a>
+      <a href="#no-cambia">Qué no cambia</a>
+      <a href="#empezar">Cómo empezar</a>
+      <a href="#honestidad">Nuestro compromiso</a>
+      <a href="#anexo">Anexo técnico</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <section id="estado">
+    <div class="note note-warn"><b>Antes de seguir, la verdad sobre el estado:</b> esto no es un producto en
+      catálogo. El diseño está cerrado y la implementación empieza el <b>17-nov-2026</b>; el primer piloto se hace
+      con <b>un despacho y pocos clientes</b>. <b>Aquí no hay precio porque todavía no lo hay</b>: poner una cifra
+      antes de saber cuánto tiempo ahorra sería inventarla. Si lo que buscas es un folleto con «soluciones
+      integrales de compliance», este no es tu documento.</div>
+  </section>
+
+  <section id="en-cristiano">
+    <h2><span class="dot"></span>En cristiano: qué es Billka</h2>
+    <p class="lead">Olvida las palabras «hash», «sello de tiempo» y «trazabilidad». Billka hace tres cosas, y las
+      tres las entiende cualquiera que haya trabajado un cierre de mes.</p>
+
+    <div class="note"><b>Las tres siglas que van a aparecer</b> (y no vuelven a aparecer sin explicar):
+      <b>SIF</b> es el programa de facturación que ya usas · <b>AEAT</b> es Hacienda · <b>RRSIF</b> es el reglamento
+      que exige que ese programa sea honesto y que no permita borrar ni maquillar una factura. Nada más.</div>
+
+    <div class="grid g3">
+      <div class="card big"><h4>① Guarda el resguardo de la entrega</h4>
+        <p>Cuando tu cliente te manda sus facturas —un Excel, fotos de tickets, un ZIP, una carpeta de
+          OneDrive—, Billka anota <b>exactamente qué te llegó y qué día</b>.</p>
+        <p class="why">Es el resguardo del envío certificado: no dice si el contenido es verdad, dice qué se
+          envió, cuándo y a quién.</p></div>
+      <div class="card big"><h4>② Comprueba que lo que metiste es lo que te dieron</h4>
+        <p>Coteja (compara) la lista del cliente con la lista de tu programa. Si una factura <b>falta</b>,
+          <b>sobra</b> o <b>no cuadra</b> el importe o la fecha, sale en una lista con nombre y línea.</p>
+        <p class="why">Nadie más hace ese cotejo: tu programa no ve lo que el cliente te entregó a ti, y el
+          cliente no ve tu programa.</p></div>
+      <div class="card big"><h4>③ Lo puedes demostrar sin llamar a nadie</h4>
+        <p>Años después, en una revisión o en una discusión con el cliente, abres el resguardo y <b>cualquiera
+          puede comprobar que no se ha tocado</b> — sin pedirnos permiso y sin que Billka tenga que seguir
+          existiendo.</p>
+        <p class="why">Eso es lo que lo convierte en constancia y no en una captura de pantalla.</p></div>
+    </div>
+
+    <div class="note note-brand"><b>Lo importante para ti:</b> Billka <b>no emite</b> facturas, <b>no presenta</b>
+      modelos, <b>no lleva libros</b> y <b>no habla con Hacienda por ti</b>. No compite con tu programa ni lo
+      sustituye: vigila el tramo que tu programa no ve —lo que el cliente te entrega— y lo deja firmado.</div>
+
+    <h3>La comparación que se entiende en una comida</h3>
+    <table>
+      <thead><tr><th>Billka se parece a…</th><th>Porque…</th><th>Y no se parece a…</th></tr></thead>
+      <tbody>
+        <tr><td><b>El resguardo del envío certificado</b></td>
+          <td>Deja constancia de qué salió, cuándo y hacia quién. No opina del contenido</td>
+          <td><b>Un informe de auditoría</b>: no juzga tu trabajo ni dice si está bien hecho</td></tr>
+        <tr><td><b>Un acta firmada por los dos</b></td>
+          <td>Si uno la cambia después, la copia que tiene el otro lo delata</td>
+          <td><b>Una cámara de seguridad</b>: no vigila a nadie en tiempo real ni graba conversaciones</td></tr>
+        <tr><td><b>El albarán de entrada del almacén</b></td>
+          <td>Dice qué entró y qué salió, con fecha y firma</td>
+          <td><b>Un seguro</b>: no cubre errores, sanciones ni disputas. Documenta, no indemniza</td></tr>
+        <tr><td><b>La copia sellada de un contrato</b></td>
+          <td>Prueba que ese texto existía ese día</td>
+          <td><b>Un notario</b>: no certifica que lo que dice el papel sea verdad</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>La frase que resume el producto:</b> el programa fiscal dice <b>qué se declaró</b>;
+      Billka deja constancia de que <b>lo declarado es lo que había</b>. Esa diferencia es todo el negocio.</div>
+  </section>
+  <section id="quitar">
+    <h2><span class="dot"></span>Lo que te quita de encima</h2>
+    <p class="lead">No hace falta que te expliquemos el problema: te ha pasado este mes. Estas son las cuatro
+      conversaciones que Billka convierte en una frase corta.</p>
+
+    <div class="grid g2">
+      <div class="scene">
+        <div class="day">Día 3 del cierre</div>
+        <div class="say">«Yo te lo mandé el día 2, seguro»</div>
+        <p>En tu correo hay un ZIP sin nombre y dos fotos borrosas. O rehaces el IVA soportado de memoria, o lo
+          dejas sin meter y rezas para que no aparezca en el banco.</p>
+        <div class="res"><b>Con Billka:</b> hay una constancia del día 2 con la lista de lo que llegó. La tercera
+          factura no está: no llegó. Se lo enseñas y la manda en cinco minutos, sin discutir y sin que quede nadie
+          como mentiroso.</div>
+      </div>
+
+      <div class="scene">
+        <div class="day">Día 18</div>
+        <div class="say">«A mí me sale otra cifra»</div>
+        <p>El 303 no cuadra con lo que el cliente dice que ha facturado. Dos horas comparando dos listas en
+          pantalla, celda a celda, con la sensación de que se te está escapando algo.</p>
+        <div class="res"><b>Con Billka:</b> las dos listas ya están comparadas. La diferencia son tres líneas: una
+          sin meter, una duplicada y una con la base cambiada.</div>
+      </div>
+
+      <div class="scene">
+        <div class="day">Día 20</div>
+        <div class="say">«Esa factura no es mía»</div>
+        <p>Aparece una factura de un proveedor que el cliente niega haber recibido. ¿La metiste tú? ¿Venía en su
+          Excel? ¿Está duplicada en el programa? Nadie lo sabe y la conversación se pone fea.</p>
+        <div class="res"><b>Con Billka:</b> se ve si venía del cliente, en qué fichero y en qué línea, o si el
+          programa la tiene dos veces. La conversación pasa de «quién se equivocó» a «qué hacemos con esto».</div>
+      </div>
+
+      <div class="scene">
+        <div class="day">Dentro de cuatro años</div>
+        <div class="say">«Necesito los registros de 2027»</div>
+        <p>Cambió el programa, cambió la persona que lo llevaba y cambió el ordenador. El plazo de conservación
+          sigue corriendo, y nadie sabe qué se recibió aquel noviembre de 2026.</p>
+        <div class="res"><b>Con Billka:</b> la carpeta del mes y sus constancias se copian a un pendrive y se
+          comprueban sin Billka, sin internet y sin nuestra base de datos. La prueba no caduca cuando caduca el
+          proveedor.</div>
+      </div>
+    </div>
+
+    <div class="note note-warn"><b>Lo que Billka NO te quita de encima</b> — y conviene decirlo antes de que lo
+      pregunte el socio:
+      <ul>
+        <li><b>La sanción</b> si el error ya se cometió: documenta lo que había, no reescribe el pasado.</li>
+        <li><b>Un cliente que presenta papeles falsos:</b> el resguardo prueba <i>qué te dio</i>, no que lo que te
+          dio sea auténtico. Para eso está el banco, no un programa.</li>
+        <li><b>El trabajo de revisar:</b> te dice dónde mirar y deja firmado lo que decidiste no tocar. No corrige
+          solo, y quien diga que lo hace está vendiendo otra cosa.</li>
+      </ul>
+    </div>
+  </section>
+  <section id="constancias">
+    <h2><span class="dot"></span>Las cuatro constancias, sin jerga</h2>
+    <p class="lead">Cada mes se generan cuatro piezas por cliente. No son cuatro productos: son cuatro momentos del
+      mismo trabajo, y cada una cierra una discusión distinta.</p>
+
+    <table>
+      <thead><tr><th>Pieza</th><th>Qué es, en la práctica</th><th>Qué discusión cierra</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Resguardo de entrada</b><br><span class="badge b-info">al recibir</span></td>
+          <td>Una foto fija, firmada y con fecha, de <b>lo que tu cliente te entregó</b> ese mes: qué ficheros, qué
+            facturas, qué fechas, qué importes.</td>
+          <td>«Yo te lo mandé» · facturas perdidas, duplicadas o cambiadas de fecha.</td></tr>
+        <tr><td><b>2 · Resguardo de salida</b><br><span class="badge b-info">al exportar</span></td>
+          <td>Una foto fija de <b>lo que tu programa dice que hay</b> en ese periodo, tal y como lo exporta el
+            programa que ya usas.</td>
+          <td>«El sistema dice otra cosa» · cambios hechos después de cerrar, versiones distintas del mismo mes.</td></tr>
+        <tr><td><b>3 · Informe de cotejo</b><br><span class="badge b-warn">día 18</span></td>
+          <td>La comparación entre las dos fotos, en tres categorías que entiende cualquiera: <b>falta</b>,
+            <b>sobra</b> o <b>no cuadra</b> (con el campo y los dos valores).</td>
+          <td>El 303 descuadrado · las dos horas buscando la diferencia a mano.</td></tr>
+        <tr><td><b>4 · Sello del día</b><br><span class="badge b-ok">diario</span></td>
+          <td>Una marca de un <b>tercero independiente</b> (una autoridad de sellado de tiempo) que dice: «esto
+            existía tal día».</td>
+          <td>«¿Y cómo sé que no lo has hecho la semana pasada?» · el sello que depende de la palabra de quien lo
+            emite no vale nada.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>Si viene un técnico a la reunión</b> y pregunta por los nombres formales: constancia de
+      entrada, constancia de salida, informe de cruce y ancla. En el <a href="#anexo">anexo</a> está el detalle
+      exacto —qué prueba cada pieza y qué no— por si hay que enseñarlo. En la mesa, usa los de arriba.</div>
+  </section>
+
+  <section id="mes">
+    <h2><span class="dot"></span>Tu mes, paso a paso</h2>
+    <p class="lead">Este es el cambio real en tu rutina: ninguno hasta el día 18, y diez minutos ese día. El
+      cliente hace lo mismo que hacía, donde lo hacía.</p>
+
+    <table>
+      <thead><tr><th>Cuándo</th><th>Qué pasa</th><th>Lo que haces tú</th></tr></thead>
+      <tbody>
+        <tr><td><b>Días 1-5</b></td><td>El cliente deja sus facturas donde siempre: carpeta compartida, correo o
+          WhatsApp</td><td><b>Nada.</b> Ni una instrucción nueva, ni un usuario nuevo, ni una contraseña</td></tr>
+        <tr><td>Al llegar</td><td>Se anota qué llegó y se firma el resguardo del mes</td>
+          <td>Nada: el resguardo se genera solo y te llega un aviso</td></tr>
+        <tr><td><b>Días 5-18</b></td><td>Trabajas como siempre en tu programa</td>
+          <td>Lo de siempre, en el programa de siempre</td></tr>
+        <tr><td><b>Día 18</b></td><td>Tu programa exporta el listado del periodo y Billka lo coteja con lo
+          recibido</td><td>Guardar un fichero donde ya lo guardas</td></tr>
+        <tr><td>Día 18-20</td><td>Sale un informe de una página por cliente con las diferencias</td>
+          <td>Revisar la lista y corregir lo que haya que corregir. <b>Lo que decidas no corregir queda anotado y
+            firmado</b></td></tr>
+        <tr><td>Cierre</td><td>Se archiva el paquete del mes: documentos, resguardos y sello</td>
+          <td>Nada: es una carpeta que puedes copiar a un pendrive o dejar en tu servidor</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Tres cosas que NO tienes que hacer</h3>
+    <div class="grid g3">
+      <div class="card yes"><h4>Cambiar de programa</h4>
+        <p>Billka se pone al lado del que ya usas, no encima. Tu programa sigue emitiendo, tú sigues trabajando
+          igual y nada de lo que factura tu despacho pasa por Billka.</p></div>
+      <div class="card yes"><h4>Aprender comandos</h4>
+        <p>En el piloto lo dejamos funcionando sobre una carpeta: aparece un fichero, se sella solo. Si te gusta la
+          consola, la hay — pero no es el camino que te vamos a proponer.</p></div>
+      <div class="card yes"><h4>Subir facturas a internet</h4>
+        <p>El trabajo pesado se hace <b>en tu ordenador</b>. Si algún día viaja algo, viajan solo las huellas
+          (unos números que no se pueden convertir de vuelta en la factura), nunca los documentos.</p></div>
+    </div>
+  </section>
+  <section id="decir">
+    <h2><span class="dot"></span>Qué puedes decir mañana en una reunión</h2>
+    <p class="lead">La diferencia entre vender esto y meterte en un lío son cuatro palabras. Estas son las
+      formulaciones que aguantan una revisión y las que no.</p>
+
+    <table>
+      <thead><tr><th>En vez de…</th><th>Di esto</th><th>Por qué funciona</th></tr></thead>
+      <tbody>
+        <tr><td>«Yo tengo aquí lo que me mandaste»</td>
+          <td>«Este es el resguardo de lo que me llegó el día 2, con la huella de tu fichero»</td>
+          <td>No apela a tu memoria: enseña un documento que el cliente también tiene</td></tr>
+        <tr><td>«Creo que se te olvidó una factura»</td>
+          <td>«En tu listado salen dos que a mí no me llegaron; te paso el detalle»</td>
+          <td>Se discute el dato, no la buena fe de nadie</td></tr>
+        <tr><td>«Mi programa no se equivoca»</td>
+          <td>«Lo que hay en el programa y lo que me diste están cotejados; aquí está la diferencia»</td>
+          <td>El programa puede tener razón, pero quien responde eres tú: mejor tener el cotejo</td></tr>
+        <tr><td>«Esto nos cubre ante Hacienda»</td>
+          <td>«Esto deja constancia de lo que me entregaste y de lo que revisé»</td>
+          <td>Lo primero es una promesa que no puedes cumplir; lo segundo es un hecho</td></tr>
+        <tr><td>«Es un sello digital»</td>
+          <td>«Es un resguardo firmado por un tercero: se puede comprobar sin mí»</td>
+          <td>«Sello digital» suena a invento; «comprobar sin mí» se entiende y es verdad</td></tr>
+      </tbody>
+    </table>
+
+    <h3>El guion de 40 segundos</h3>
+    <div class="quote">«A partir de este mes te voy a mandar, junto con el cierre, un resguardo de lo que me
+      entregas y de lo que meto en el programa. No tienes que hacer nada distinto: sigue mandándome las facturas
+      como siempre. Lo que cambia es que si dentro de tres años alguien pregunta qué pasó en noviembre, lo podemos
+      demostrar los dos, sin depender de mi memoria ni de la versión de mi programa. Y te mando la misma copia que
+      guardo yo, para que no haya dos versiones de la historia.»
+      <span class="who">— Dilo tal cual. No hace falta añadir nada más, y añadir de más es lo que rompe la venta.</span></div>
+
+    <div class="note note-warn"><b>Tres frases que no debes decir nunca</b> (ni en una comida, ni en un WhatsApp
+      que acabe reenviado):
+      <ul>
+        <li><b>«Billka garantiza que cumples.»</b> Nadie puede garantizar el cumplimiento de otro. Billka deja
+          constancia de hechos técnicos. Si lo dices y luego hay una sanción, esa frase se vuelve contra ti.</li>
+        <li><b>«Hacienda lo acepta / está homologado.»</b> Billka no habla con la AEAT y no está homologado por
+          nadie. Lo que hace es <i>comprobable por un tercero</i>, que es distinto —y más útil— que un sello de
+          aprobación que no existe.</li>
+        <li><b>«Con esto no te pueden sancionar.»</b> Falso. Documenta el pasado; no borra un error ni cambia la
+          calificación de una operación.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="autodiagnostico">
+    <h2><span class="dot"></span>Siete preguntas para saber si esto es para ti</h2>
+    <p class="lead">No es un test de marketing. Si no marcas al menos tres, no merece la pena que hablemos: el
+      piloto te va a costar más de lo que te va a dar.</p>
+
+    <ul class="check">
+      <li>¿Has rehecho un cierre porque el cliente jura que mandó algo que no encuentras?</li>
+      <li>¿Has buscado una diferencia de 200 € entre dos listas durante más de una hora?</li>
+      <li>¿Tienes clientes que mandan fotos de tickets por WhatsApp?</li>
+      <li>¿Has tenido que explicar por qué tu programa dice una cosa y el cliente otra?</li>
+      <li>¿Sabes hoy, sin abrir el correo, qué te entregó el cliente X en octubre?</li>
+      <li>¿Has cambiado de programa, de ordenador o de persona y has perdido el rastro de un año?</li>
+      <li>¿Te han pedido justificar algo de hace tres o cuatro años?</li>
+    </ul>
+
+    <div class="note note-brand"><b>Si has marcado tres</b>, el piloto te va a doler en el primer cierre y ahorrar
+      en el segundo. <b>Si has marcado cinco</b>, ya lo estás pagando en horas cada mes: solo que no aparece en
+      ninguna factura y por eso no se ve.</div>
+  </section>
+  <section id="objeciones">
+    <h2><span class="dot"></span>Lo que te van a decir (y qué contestas)</h2>
+    <p class="lead">Estas son las diez objeciones reales, con la respuesta que puedes dar en voz alta sin mentir.
+      Si alguna no la puedes defender, no la uses: pides un café y lo hablamos.</p>
+
+    <table>
+      <thead><tr><th>Objeción</th><th>Qué contestas</th><th>Por qué es verdad</th></tr></thead>
+      <tbody>
+        <tr><td><b>«Mi programa ya hace eso»</b></td>
+          <td>«Tu programa guarda lo que tú emites. ¿Guarda lo que el cliente te entrega a ti?»</td>
+          <td>El cotejo necesita los dos lados, y el lado del cliente no está en ningún programa de facturación</td></tr>
+
+        <tr><td><b>«Mi cliente no va a cambiar»</b></td>
+          <td>«No cambia nada: sigue mandándote las facturas donde siempre»</td>
+          <td>El piloto no le pide usuario, ni portal, ni contraseña, ni instalar nada</td></tr>
+
+        <tr><td><b>«No quiero otro programa que mantener»</b></td>
+          <td>«No lo mantienes tú, y si un día desaparece, tus resguardos siguen ahí»</td>
+          <td>Se comprueban con un programa que ya tienes en el ordenador, sin conexión y sin nuestra base de datos</td></tr>
+
+        <tr><td><b>«¿Y si mi cliente se ofende?»</b></td>
+          <td>«La constancia te la mando también a ti: no es desconfianza, es que tengamos la misma copia»</td>
+          <td>Si el despacho quisiera falsear algo, tendría que falsificar además la copia que ya está en manos del cliente</td></tr>
+
+        <tr><td><b>«¿Cuánto tiempo me quita?»</b></td>
+          <td>«Diez minutos al mes por cliente, y solo el día 18»</td>
+          <td>El resto es automático; y se recupera en las llamadas de «yo te lo mandé», que no son diez minutos</td></tr>
+
+        <tr><td><b>«¿Y si el error es mío?»</b></td>
+          <td>«Entonces sale antes de presentar, y queda anotado que lo viste y qué decidiste»</td>
+          <td>Un control que detecta y corrige es prueba de diligencia, no una confesión. Lo que no se puede defender es no haber mirado</td></tr>
+
+        <tr><td><b>«¿Y el RGPD? ¿Tengo que avisar a mis clientes?»</b></td>
+          <td>«Los documentos no salen de tu ordenador; solo viajan huellas, que no se pueden convertir de vuelta»</td>
+          <td>En el piloto el trabajo es local. Aun así firmamos el encargo de tratamiento: si hay datos personales, hay papel</td></tr>
+
+        <tr><td><b>«¿Y si Billka cierra?»</b></td>
+          <td>«Te quedas la carpeta, los resguardos y el programa para comprobarlos: no dependen de nosotros»</td>
+          <td>Es el criterio de diseño, no una promesa: si esto no se cumple, no hay producto que vender</td></tr>
+
+        <tr><td><b>«¿Esto me cubre ante Hacienda?»</b></td>
+          <td>«No te cubre: documenta qué recibiste, qué declaraste y qué revisaste»</td>
+          <td>Nadie serio puede prometer cobertura. Lo que sí se puede prometer es que el documento aguanta que lo mire un tercero</td></tr>
+
+        <tr><td><b>«¿Cuánto cuesta?»</b></td>
+          <td>«Todavía no hay precio: primero el piloto, y el precio se cierra con lo que se haya medido»</td>
+          <td>Poner una cifra antes de saber cuánto tiempo ahorra sería inventarla. Y lo que se inventa hoy se defiende mal en junio</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note note-ok"><b>La objeción que no hay que ganar:</b> «¿esto me sirve para que Hacienda no me
+      multe?». Si el despacho compra por eso, el cliente es malo y el problema será nuestro en la primera
+      inspección. Se contesta con la verdad y se deja ir: <b>Billka documenta, no protege de una sanción</b>.</div>
+  </section>
+  <section id="no-cambia">
+    <h2><span class="dot"></span>Lo que no cambia, y lo que Billka no es</h2>
+    <p class="lead">Nadie cambia de programa por un folleto. Esto es lo que se queda exactamente igual, y lo que no
+      debes esperar de nosotros aunque nos lo pidas.</p>
+
+    <div class="grid g2">
+      <div class="card yes"><h4>Lo que sigue igual</h4>
+        <ul>
+          <li><b>Tu programa</b>: sigue emitiendo, sigue siendo el que presenta y sigue siendo el que responde.</li>
+          <li><b>Tu forma de trabajar</b>: mismos plazos, mismos clientes, mismo orden de tareas.</li>
+          <li><b>Tus libros y tu contabilidad</b>: Billka no los toca, no los lee y no los corrige.</li>
+          <li><b>Tu responsabilidad</b>: no cambia ni se reparte. Billka no firma por ti ni declara por ti.</li>
+          <li><b>La facturación de tu despacho</b>: no pasa por aquí. Ni la tuya ni la de tus clientes.</li>
+          <li><b>La relación con tu cliente</b>: no le vendemos nada, no le escribimos y no le pedimos datos.</li>
+        </ul>
+      </div>
+      <div class="card no"><h4>Lo que no es (y no vamos a fingir que lo sea)</h4>
+        <ul>
+          <li><b>No es un SIF</b>: no emite facturas ni registros de facturación (el SIF es tu programa, no esto).</li>
+          <li><b>No presenta ni habla con la AEAT</b>: no remite, no comunica, no descarga datos.</li>
+          <li><b>No es una auditoría</b>: no opina de tu trabajo ni emite una opinión técnica.</li>
+          <li><b>No es un seguro</b>: no indemniza nada, nunca.</li>
+          <li><b>No es un notario</b>: no certifica que lo que dice el papel sea verdad.</li>
+          <li><b>No es una web para el autónomo</b>: en 2026 no, porque eso sería custodiar facturación ajena.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note note-warn"><b>Si alguien te vende Billka como «cumplimiento garantizado» o «homologado por
+      Hacienda», no es Billka:</b> es otra cosa con nuestro nombre. No lo somos, no lo vamos a ser y no lo vamos a
+      insinuar para cerrar una venta.</div>
+  </section>
+
+  <section id="empezar">
+    <h2><span class="dot"></span>Cómo empezar (y por qué todavía no hay precio)</h2>
+    <p class="lead">Tres cosas, ninguna técnica. Si las tres salen, el piloto arranca; si alguna no sale, te lo
+      decimos en la primera reunión y no perdemos el tiempo ninguno de los dos.</p>
+
+    <div class="cta">
+      <h3>La prueba de los diez minutos</h3>
+      <p>Antes de hablar de piloto, se puede comprobar si esto tiene sentido para tu cartera:</p>
+      <ol>
+        <li>Eliges <b>un cliente y un mes ya cerrado</b> (mejor uno que te diera guerra).</li>
+        <li>Exportas el listado de ese periodo desde tu programa, como lo exportas siempre.</li>
+        <li>Nos pasas ese fichero junto con lo que el cliente te entregó ese mes.</li>
+      </ol>
+      <p style="margin-top:12px">En 48 horas te decimos tres cosas: si los datos se pueden leer, <b>qué diferencias
+        habría encontrado</b> y qué parte de tu trabajo mensual se habría ahorrado. Sin coste y sin compromiso de
+        nada: si no hay diferencias, también te lo decimos, y es la mejor noticia para ti.</p>
+    </div>
+    <h3>Qué hace falta para el piloto (y qué pasa si falta)</h3>
+    <table>
+      <thead><tr><th>Requisito</th><th>Por qué</th><th>Si no se cumple</th></tr></thead>
+      <tbody>
+        <tr><td>Que tu programa <b>exporte</b> el periodo</td>
+          <td>Sin el lado derecho no hay cotejo</td>
+          <td>Se puede sellar lo que entrega el cliente, pero es medio producto: no lo vendemos como completo</td></tr>
+        <tr><td>Que el cliente entregue <b>ficheros</b> (Excel, CSV, PDF), no solo papel</td>
+          <td>El papel se sella como documento, pero no se leen sus datos</td>
+          <td>Ese cliente queda como «documento entregado»: sirve de resguardo, no de cotejo</td></tr>
+        <tr><td><b>Media hora</b> de una persona con nombre</td>
+          <td>Alguien tiene que decidir carpeta, periodo y quién revisa el informe</td>
+          <td>El piloto muere en marzo, como mueren todas las herramientas sin dueño</td></tr>
+        <tr><td><b>Uno a tres clientes</b>, no cuarenta</td>
+          <td>Aprender con poco y romper poco</td>
+          <td>Un piloto grande esconde los fallos en el ruido y no enseña nada</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Qué te llevas del piloto</h3>
+    <div class="grid g3">
+      <div class="card"><h4>Los resguardos y el informe</h4>
+        <p>Un mes completo funcionando con clientes reales: entrada, salida, cotejo y sello, con el informe que
+          revisarías tú.</p></div>
+      <div class="card"><h4>Una prueba en directo</h4>
+        <p>Cambiamos un dígito de una factura delante de ti y se detecta, con fichero y línea. Re-guardamos el Excel
+          sin tocar datos y <b>no</b> da falsa alarma. Esa diferencia es el producto.</p></div>
+      <div class="card"><h4>Un informe honesto</h4>
+        <p>Qué se encontró, cuánto tiempo costó, qué no funcionó y qué habría que cambiar. Aunque la conclusión sea
+          que no te compensa.</p></div>
+    </div>
+
+    <div class="note note-brand"><b>Por qué ahora y no en 2028:</b> los plazos son <b>1-ene-2027</b> para Impuesto
+      de Sociedades y <b>1-jul-2027</b> para el resto, autónomos en IRPF incluidos (disposición final cuarta del
+      reglamento de facturación, modificada por el RDL 15/2025). La ley <b>no obliga a remitir</b> —quedarse en la
+      modalidad local es una opción legal y explícita—, pero en local <b>nadie comprueba nada hasta que alguien lo
+      pide</b>, y el registro se queda en un disco del despacho. Eso no lo arregla ninguna prórroga.</div>
+
+    <div class="note"><b>Y por qué no hay precio todavía:</b> porque el precio honesto sale de dos datos que aún no
+      tenemos —cuánto tiempo ahorra de verdad por cliente y cuántos clientes usan el resguardo—. Publicar una cifra
+      ahora sería hacer lo mismo que criticamos en esta web: inventar. <b>El piloto se hace con un despacho, y el
+      precio se cierra después, con sus números delante.</b></div>
+  </section>
+  <section id="honestidad">
+    <h2><span class="dot"></span>Lo que no vas a leer en este dossier</h2>
+    <p class="lead">Un dossier que solo habla de ventajas no se puede usar dos años seguidos. Estos son los
+      compromisos que asumimos por escrito, y que están en el ADR <code>B0011</code> de nuestro repositorio.</p>
+
+    <div class="grid g2">
+      <div class="card no"><h4>Porcentajes de mercado sin fuente</h4>
+        <p>Retiramos los que teníamos —<b>1,75 % · 98 % · 82 % · 37 %</b>— porque no pudimos abrir el documento
+          original. Si un dato no lo podemos enseñar, no lo publicamos, y menos en una reunión en la que tú
+          tendrías que defenderlo.</p></div>
+      <div class="card no"><h4>«Cumplimiento garantizado»</h4>
+        <p>Nadie puede garantizar el cumplimiento de otro. Lo que se puede garantizar es que un documento se puede
+          comprobar y que aguanta que lo mire un tercero.</p></div>
+      <div class="card no"><h4>«Homologado por la AEAT»</h4>
+        <p>No existe esa homologación para lo que hacemos y no la vamos a insinuar. Lo verificable es mejor que lo
+          aprobado, y además es cierto.</p></div>
+      <div class="card no"><h4>Clientes inventados</h4>
+        <p>El primer despacho piloto sale del círculo de Komanda. No hay logotipos de clientes que no existen, ni
+          testimonios escritos por nosotros, ni «más de X despachos confían».</p></div>
+    </div>
+
+    <div class="note note-brand"><b>Y si algún día ves a Billka decir algo que no aguanta esta página</b>, dínoslo:
+      lo corregimos en público. Un producto que vende constancias no puede permitirse un folleto que mienta.</div>
+  </section>
+
+  <section id="anexo">
+    <h2><span class="dot"></span>Anexo técnico (para el socio que pregunta)</h2>
+    <p class="lead">Todo lo anterior se sostiene en documentos públicos y ningún algoritmo propietario. Esto es lo
+      que hay detrás, por si en la reunión hay alguien que quiere el detalle: no hace falta leerlo para decidir.</p>
+
+    <details>
+      <summary>Qué prueba cada pieza, y qué no (la tabla que corta las discusiones)</summary>
+      <div class="inner">
+        <table>
+          <thead><tr><th>Propiedad</th><th>La da</th><th>No la da</th></tr></thead>
+          <tbody>
+            <tr><td><b>Integridad</b> — no se alteró desde que se fijó</td><td>La huella, la cadena y el sello</td>
+              <td>—</td></tr>
+            <tr><td><b>Anterioridad</b> — existía en esa fecha</td><td>El sello de tiempo de un tercero</td>
+              <td>Una fecha guardada en nuestra base de datos</td></tr>
+            <tr><td><b>Coherencia</b> — lo que entró es lo que salió</td><td>El cotejo contra la fuente</td>
+              <td>Sellar un solo lado</td></tr>
+            <tr><td><b>Veracidad</b> — la operación ocurrió</td>
+              <td>Una fuente independiente: banco, TPV, albarán, stock, AEAT</td>
+              <td><b>Nunca una huella</b>: la huella de una factura inventada es una huella perfecta</td></tr>
+            <tr><td><b>Exactitud fiscal</b> — cumple el RRSIF</td><td>El SIF declarado y su proveedor</td>
+              <td>Billka, en ningún caso</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>Los siete estados del cotejo (y por qué no hay «no sé»)</summary>
+      <div class="inner">
+        <p>Cada línea del informe tiene un estado. El criterio de salida del producto es <b>cero líneas sin
+          estado</b>: lo que no se puede interpretar se marca como tal, no se esconde.</p>
+        <table>
+          <thead><tr><th>Estado</th><th>Qué significa</th></tr></thead>
+          <tbody>
+            <tr><td><code>coincide</code></td><td>Está en los dos lados y todos los campos comparados cuadran</td></tr>
+            <tr><td><code>ausente_en_salida</code></td><td>El cliente lo entregó y el programa no lo tiene</td></tr>
+            <tr><td><code>ausente_en_entrada</code></td><td>El programa lo tiene y no hay documento entregado</td></tr>
+            <tr><td><code>discrepante</code></td><td>Está en los dos, pero difiere un campo: se listan el campo y los dos valores</td></tr>
+            <tr><td><code>duplicado_entrada</code></td><td>El mismo documento entregado más de una vez</td></tr>
+            <tr><td><code>ambiguo</code></td><td>Número repetido sin forma de desambiguar: se marca, nunca se elige al azar</td></tr>
+            <tr><td><code>no_interpretable</code></td><td>PDF o imagen que se sella como documento entregado, sin extraer datos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <details>
+      <summary>Cómo se comprueba sin nosotros (esto es lo que se vende)</summary>
+      <div class="inner">
+        <p>El lote es una carpeta: se puede copiar a un pendrive y sigue siendo verificable. El sello de tiempo se
+          comprueba con una herramienta estándar que ya está en cualquier ordenador, sin nuestros servidores:</p>
+        <pre><code># comprobar el paquete del mes, sin conexión y sin Billka
+$ billka verificar lote-2026-11-cliente/
+  OK    manifest.json  (billka.lote/1)
+  OK    12 ficheros . huella de contenido intacta
+  WARN  ticket-014.pdf  REGUARDADO (no es manipulación)
+  resultado: 0
+
+# comprobar el sello de tiempo contra la autoridad, sin Billka
+$ openssl ts -verify -in ancla.tsr -data imprint.bin -CAfile tsa.pem
+Verification: OK</code></pre>
+        <p>Y la distinción que lo hace útil: un Excel re-guardado cambia de bytes pero no de datos
+          (<b>aviso</b>); un dígito cambiado en una fila cambia los datos y se detecta <b>con fichero y línea</b>
+          (<b>error</b>). Un verificador que grita con lo primero se abandona en una semana.</p>
+        <p>Si Billka desapareciera mañana, el despacho conserva la carpeta, los resguardos y los sellos, y el
+          programa para comprobarlos sigue funcionando en la máquina que ya lo tiene. <b>Ese es el criterio de
+          diseño, no una promesa de marketing: si no se cumple, no hay producto.</b></p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Los artículos, uno a uno (por si hay que enseñarlo)</summary>
+      <div class="inner">
+        <table>
+          <thead><tr><th>Hecho citable</th><th>Dónde</th></tr></thead>
+          <tbody>
+            <tr><td>Remitir a la AEAT es <b>voluntario</b></td><td>art. 15 RRSIF</td></tr>
+            <tr><td>Solo es VERI*FACTU si se remiten <b>todos</b> los registros, de forma continuada y fehaciente</td>
+              <td>art. 16.1 RRSIF</td></tr>
+            <tr><td>Los requisitos técnicos son los mismos en las dos modalidades</td><td>art. 8.2 RRSIF</td></tr>
+            <tr><td>Conservación durante el plazo de la LGT: <b>4 años</b>, con descarga y volcado a almacenamiento
+              externo legible</td><td>art. 8.2.c) RRSIF · art. 66 LGT</td></tr>
+            <tr><td>La comprobación de la Administración es <b>a requerimiento</b></td><td>art. 14.1 RRSIF</td></tr>
+            <tr><td>Rectificar no borra: registro de anulación encadenado</td><td>art. 11 RRSIF</td></tr>
+            <tr><td>Plazos: 1-ene-2027 (sociedades) y 1-jul-2027 (resto)</td>
+              <td>disposición final cuarta RRSIF, mod. RDL 15/2025</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:12px"><b>Nota:</b> el «diez años» que circula por ahí <b>no</b> es el plazo general: es
+          el art. 66 bis.2 LGT y solo afecta a bases o cuotas compensadas. El plazo de conservación del registro es
+          de cuatro años, y decirlo bien en una reunión vale más que decir una cifra grande.</p>
+      </div>
+    </details>
+  </section>
+
+  <div class="cta">
+    <h3>El siguiente paso, en una frase</h3>
+    <p>Elige un cliente y un mes que te diera guerra, mándanos el export de tu programa y lo que él te entregó, y
+      en 48 horas sabrás si Billka te habría ahorrado esa discusión. <b>Sin precio, sin contrato y sin que tu
+      cliente tenga que enterarse de nada.</b></p>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Billka · dossier para despachos y gestorías · 10-nov-2026<br>
+    El detalle técnico y el calendario están en <a href="billka_roadmap.html">la presentación del producto</a>.
+    <div class="mini">Documento comercial sin oferta contractual. No es un SIF, no remite a la AEAT y no garantiza
+      el cumplimiento normativo: atesta hechos técnicos reproducibles. Cifras de mercado retiradas por falta de
+      fuente primaria (ADR B0011).</div>
+  </div>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
