@@ -1,0 +1,38 @@
+[
+  {
+    "specversion": "1.0",
+    "id": "0190c100-0000-7000-8000-000000000041",
+    "source": "billka/worker/cotejo",
+    "type": "cotejo.aeat.done",
+    "schemaversion": 1,
+    "time": "2026-11-10T12:00:00Z",
+    "tenantid": "0190a100-0000-7000-8000-0000000000a1",
+    "datacontenttype": "application/json",
+    "data": {
+      "invoice_id": "0190b100-0000-7000-8000-000000000001",
+      "checked_at": "2026-11-10T12:00:00Z",
+      "issuer_nif": "12345678Z",
+      "invoice_number": "2026-0001",
+      "result": "match",
+      "detail": "Factura localizada en la sede de la AEAT"
+    }
+  },
+  {
+    "specversion": "1.0",
+    "id": "0190c100-0000-7000-8000-000000000042",
+    "source": "billka/worker/cotejo",
+    "type": "cotejo.aeat.done",
+    "schemaversion": 1,
+    "time": "2026-11-10T12:05:00Z",
+    "tenantid": "0190a100-0000-7000-8000-0000000000a1",
+    "datacontenttype": "application/json",
+    "data": {
+      "checked_at": "2026-11-10T12:05:00Z",
+      "issuer_nif": "B12345674",
+      "invoice_number": "2026-0042",
+      "result": "unavailable",
+      "detail": "Servicio de cotejo no disponible",
+      "retry_after_seconds": 900
+    }
+  }
+]

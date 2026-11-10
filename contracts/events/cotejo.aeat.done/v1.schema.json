@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://billka.es/contracts/events/cotejo.aeat.done/v1.schema.json",
+  "title": "cotejo.aeat.done v1 (data)",
+  "description": "Resultado de comprobar en la sede de la AEAT si una factura consta. Bajo demanda y con límite de frecuencia: no es un derecho de consulta ilimitado.",
+  "x-status": "draft",
+  "type": "object",
+  "required": [
+    "checked_at",
+    "issuer_nif",
+    "invoice_number",
+    "result"
+  ],
+  "properties": {
+    "invoice_id": { "type": "string", "format": "uuid", "description": "Factura local cotejada, si la consulta partió de una factura propia" },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "issuer_nif": { "type": "string", "pattern": "^[0-9A-Z][0-9]{7}[0-9A-Z]$" },
+    "invoice_number": { "type": "string", "minLength": 1 },
+    "result": { "enum": ["match", "mismatch", "not_found", "unavailable", "error"] },
+    "detail": { "type": "string", "maxLength": 500, "description": "Texto de la AEAT o del error; nunca credenciales" },
+    "retry_after_seconds": { "type": "integer", "minimum": 1, "description": "Presente si result=unavailable/error" }
+  },
+  "additionalProperties": false
+}

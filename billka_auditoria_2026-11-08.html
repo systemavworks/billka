@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billka — auditoría del scaffold · 8-nov-2026 (histórico)</title>
+<style>
+  :root{
+    --bg:#fbfaf8; --panel:#ffffff; --panel2:#f5f2ee; --ink:#1f2328; --muted:#6f6a63;
+    --line:#eae5de; --brand:#b45f2e; --brand2:#8a4a24; --ok:#2e7d5b; --warn:#a9750f;
+    --todo:#b23a2e; --info:#2b6cb0; --violet:#6b46c1;
+    --radius:16px; --shadow:0 1px 2px rgba(40,32,24,.04),0 10px 30px rgba(40,32,24,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif}
+  a{color:var(--info);text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+  header{padding:56px 0 34px;background:linear-gradient(180deg,#ffffff,#fbfaf8);border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:36px;letter-spacing:-.6px;font-weight:650}
+  h1 .k{color:var(--brand)}
+  .sub{color:var(--muted);margin-top:8px;font-size:15px;letter-spacing:.02em}
+  .tagline{margin-top:20px;background:var(--panel);border:1px solid var(--line);
+    border-left:3px solid var(--brand);padding:14px 18px;border-radius:12px;box-shadow:var(--shadow);
+    font-size:16px;color:#33302c}
+  .brand{display:flex;align-items:center;gap:20px}
+  .brand .logo{height:88px;width:auto;flex:0 0 auto;border-radius:14px;
+    filter:drop-shadow(0 8px 18px rgba(40,32,24,.16))}
+  @media(max-width:600px){.brand{gap:14px}.brand .logo{height:60px}}
+  main{padding:10px 0 70px}
+  section{padding:30px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:0 0 6px;font-weight:640;display:flex;align-items:center;gap:11px;letter-spacing:-.2px}
+  h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+  h3{font-size:16px;margin:22px 0 8px;font-weight:640}
+  p.lead{color:var(--muted);margin:0 0 18px;font-size:15px;max-width:840px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 8px;font-size:15px;font-weight:640}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+  .card li{margin:4px 0}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+  .b-ok{background:#eaf6f0;color:var(--ok);border:1px solid #cfe9dd}
+  .b-warn{background:#fbf3e2;color:var(--warn);border:1px solid #efe0bd}
+  .b-todo{background:#fbeceb;color:var(--todo);border:1px solid #f0d4d1}
+  .b-info{background:#eaf1fb;color:var(--info);border:1px solid #d3e2f6}
+  .b-violet{background:#f0ecfb;color:var(--violet);border:1px solid #ddd3f4}
+  .stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:13px}
+  .chip b{color:var(--brand2)}
+  code{background:#f3f0ec;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;color:#5a5049}
+  pre{background:#f3f0ec;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;
+    font-size:13px;color:#3d3730;margin:10px 0}
+  pre code{background:none;border:none;padding:0}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin:2px 0 18px}
+  .kpi{display:flex;gap:34px;flex-wrap:wrap;margin:8px 0}
+  .kpi .n{font-size:28px;font-weight:680;color:var(--ink);letter-spacing:-.5px}
+  .kpi .l{color:var(--muted);font-size:13px}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--violet);
+    border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:14px;color:#33302c;margin:14px 0}
+  .note b{color:var(--violet)}
+  .note-warn{border-left-color:var(--todo)}
+  .note-warn b{color:var(--todo)}
+  .note-ok{border-left-color:var(--ok)}
+  .note-ok b{color:var(--ok)}
+  footer{padding:30px 0 50px;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <img class="logo" alt="Billka" src="logo_billka.jpeg">
+      <div>
+        <h1><span class="k">Billka</span> — auditoría del scaffold</h1>
+        <div class="sub">Informe histórico · estado del árbol el 8-nov-2026, <b>antes</b> del saneamiento del
+          10-nov-2026 · documento conservado como registro, no como descripción actual</div>
+      </div>
+    </div>
+    <div class="tagline">«204 ficheros, 2,6 MB… y <b>512 líneas de código</b>, todas <code>// TODO</code>.
+      El árbol estaba <b>bien pensado</b> y <b>mal poblado</b> — que es el orden correcto.»</div>
+    <div class="note note-warn"><b>Aviso:</b> este informe describe el repositorio el 8-nov-2026. Desde entonces se
+      borraron los 106 stubs, se corrigió <code>fiskal</code> → <code>fiscal</code>, se renumeraron los ADRs y los
+      scripts dejaron de mentir: <b>las cifras de esta página ya no son ciertas</b>. El estado actual está en
+      <a href="billka_roadmap.html">billka_roadmap.html</a> y en <code>ARCHITECTURE.md</code>.</div>
+  </div>
+</header>
+<main class="wrap">
+  <section id="resumen">
+    <h2><span class="dot"></span>Resumen en una pantalla</h2>
+    <p class="lead">Auditoría del árbol creado el 8-nov-2026 para Billka (producto paralelo: cotejo y emisión fiscal
+      sobre la misma caja, con backend, BD y despliegue propios y <code>fiscal-kit</code> compartido, según ADR 0009).
+      Lo que hay es un <b>esqueleto de decisiones</b>: coherente y con buen gusto en infraestructura, pero sin una sola
+      línea de lógica fiscal. El valor real está en <b>tres ficheros</b>.</p>
+    <div class="kpi">
+      <div><div class="n">204</div><div class="l">ficheros · 2,6 MB</div></div>
+      <div><div class="n">512</div><div class="l">líneas de código (100 % marcadores)</div></div>
+      <div><div class="n">84</div><div class="l">ficheros <code>.kt</code> de 2 líneas</div></div>
+      <div><div class="n">0</div><div class="l">migraciones SQL reales</div></div>
+      <div><div class="n">0</div><div class="l">commits locales (remoto: 1, solo LICENSE + README)</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Artefacto con contenido real</th><th>Líneas</th><th>Por qué importa</th></tr></thead>
+      <tbody>
+        <tr><td><code>docs/adr/0009-billka-producto-paralelo-caja-unica.md</code></td><td>73</td><td>la decisión que define el producto: caja compartida, runtime y datos separados</td></tr>
+        <tr><td><code>infra/docker/docker-compose.yml</code></td><td>79</td><td>proyecto Docker propio <code>billka</code>, puertos propios, volúmenes con prefijo</td></tr>
+        <tr><td><code>contracts/check.py</code></td><td>63</td><td>idea correcta de contratos congelados por hash (sha256 + <code>--update</code>)</td></tr>
+        <tr><td><code>docs/security/threat-model.md</code></td><td>20</td><td>riesgos y mitigantes en formato usable</td></tr>
+        <tr><td><code>docs/fiscal/cotejo-aeat.md</code> · <code>hash-chain.md</code> · <code>verifactu-spec.md</code></td><td>15 · 13 · 13</td><td>las únicas notas fiscales con sustancia</td></tr>
+        <tr><td>Todo lo demás: <code>core/</code>, <code>web/</code>, <code>tests/</code>, <code>docs/</code>, CI</td><td>1–8</td><td><code>// TODO</code>, «Pendiente de documentar» o placeholder</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Diagnóstico corto:</b> el árbol sirve como <b>recordatorio de decisiones</b>, no como
+      proyecto. El problema no es la cantidad de código: hay <b>5 defectos que hoy cuestan minutos y en marzo cuestan
+      días</b> (P0), <b>9 incoherencias entre lo que el ADR/las decisiones prometen y lo que el árbol hace</b> (P1) y
+      <b>4 agujeros en los contratos</b> (P2), incluido un CI en verde que no valida nada.</div>
+  </section>
+  <section id="inventario">
+    <h2><span class="dot"></span>Inventario · qué hay de verdad en cada carpeta</h2>
+    <p class="lead">Medido con <code>find</code> + <code>wc -l</code> sobre el árbol completo (204 ficheros, 2,6 MB).</p>
+    <table>
+      <thead><tr><th>Carpeta</th><th>Ficheros</th><th>Qué contiene en realidad</th></tr></thead>
+      <tbody>
+        <tr><td><code>core/</code></td><td>76</td><td>84 ficheros <code>.kt</code> (main + test) con <b>2 líneas</b> cada uno. El <code>build.gradle.kts</code> declara <code>kotlin jvm 2.1.0</code> + <code>application</code> y la dependencia de <code>:fiscal-kit</code>, pero <b>no hay Ktor, Exposed, Hikari, Flyway, driver Postgres, JWT ni logback</b>. <code>V001…V010__*.sql</code> son 3 líneas de comentario</td></tr>
+        <tr><td><code>fiscal-kit/</code></td><td>26</td><td>22 stubs. Paquete <code>es.billka.fiskal</code> (con <b>K</b>). README: «Pendiente de documentar»</td></tr>
+        <tr><td><code>web/</code></td><td>37</td><td>14 páginas de <b>8 líneas</b> + 4 libs de 2 líneas. <code>package.json</code> con Next 14.2.16 / React 18.3.1, sin cliente HTTP, sin lector QR, sin auth. <code>"test": "echo \"tests pendientes\""</code></td></tr>
+        <tr><td><code>infra/</code></td><td>10</td><td><b>el compose sí es real</b> (79 líneas). Los dos Dockerfiles son placeholders (<code>sleep infinity</code>). <code>hetzner/cloud-init.yaml</code> y <code>firewall.rules</code>: 1 línea <code>TODO</code></td></tr>
+        <tr><td><code>contracts/</code></td><td>7</td><td><code>check.py</code> real; <code>LOCK.json</code> con <code>files: {}</code>; 5 schemas que no validan nada (ver P2)</td></tr>
+        <tr><td><code>docs/</code></td><td>24</td><td>6 con algo de contenido, 18 de 1–5 líneas. ADRs 0001–0008: <b>5 líneas cada uno</b></td></tr>
+        <tr><td><code>tests/</code></td><td>5</td><td>3 SQL + 2 Kotlin, todos <code>TODO</code></td></tr>
+        <tr><td><code>scripts/</code></td><td>7</td><td><code>dev.sh</code>, <code>check-contracts.sh</code> y <code>backup.sh</code> funcionan; <code>deploy.sh</code> aborta a propósito (bien); <code>seed-demo.sh</code> y <code>e2e.sh</code> solo imprimen; <code>restore.sh</code> sale con <b>0</b> diciendo «pendiente»</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="bien">
+    <h2><span class="dot"></span>Lo que está bien (y es más de lo habitual)</h2>
+    <p class="lead">No es cortesía: estos aciertos son los que hacen que el árbol sea reutilizable tal cual.</p>
+    <table>
+      <thead><tr><th>Acierto</th><th>Evidencia</th></tr></thead>
+      <tbody>
+        <tr><td>Frontera con Komanda bien resuelta</td><td><code>name: billka</code> + <code>-p billka</code>, volúmenes <code>billka_pgdata</code>, contenedores <code>billka_*</code> → idempotente, no pisa nada de Komanda</td></tr>
+        <tr><td><b>Cero colisión de puertos</b> (verificado)</td><td>Komanda prod: <code>80:80</code>, <code>443:443</code>; Komanda dev: <code>5432</code>, <code>1883</code>. Billka: <code>18080</code>, <code>13000</code>, <code>15433</code>, <code>8088</code>, <code>8443</code>. Sin solapes</td></tr>
+        <tr><td>Postura de red correcta</td><td>BD y core publicados solo en <code>127.0.0.1</code>; lo único expuesto es Caddy</td></tr>
+        <tr><td>Next coherente con Docker</td><td><code>output: "standalone"</code> + <code>poweredByHeader: false</code> es lo que espera un <code>Dockerfile.web</code> multi-stage</td></tr>
+        <tr><td><code>.gitignore</code> de verdad</td><td>cubre <code>.env*</code>, <code>*.dump</code>, <code>*.pem</code>, <code>*.key</code>, <code>*.p12</code>, <code>backups/</code> → mejor que muchos repos en producción</td></tr>
+        <tr><td>Idea de contratos congelados</td><td><code>LOCK.json</code> con sha256 + <code>check.py --update</code> idempotente: el <b>patrón</b> es el correcto (falta el contenido)</td></tr>
+        <tr><td>ADR 0009 bien escrito</td><td>tabla eje/decisión/motivo + «Riesgo aceptado» + disparadores de separación física</td></tr>
+        <tr><td>Higiene de repositorio</td><td><code>.editorconfig</code> (kt 4 espacios, sql 2), <code>billka.code-workspace</code> multi-root, LICENSE propietaria, runbooks esbozados</td></tr>
+        <tr><td>Contratos CloudEvents 2020-12</td><td><code>specversion</code> + <code>tenant_id</code> en el envelope → misma familia que Komanda</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section id="p0">
+    <h2><span class="dot"></span>P0 · Arreglar antes de escribir una sola línea de código</h2>
+    <p class="lead">Cuatro cosas que <b>hoy cuestan minutos</b> y en marzo cuestan días (o un susto).</p>
+    <table>
+      <thead><tr><th>#</th><th>Defecto</th><th>Por qué urge</th><th>Acción concreta</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-todo">P0-1</span></td>
+          <td><b>El árbol local no está versionado</b> (aunque el remoto existe)</td>
+          <td>El remoto <code>github.com/systemavworks/billka</code> sí existe, pero <code>git status</code> en la carpeta responde «no es un repositorio git (ni ninguno de los directorios superiores)»: <b>no hay <code>.git</code></b>. Es decir, los 204 ficheros auditados aquí no tienen historial y no están en el remoto; solo viven en este disco, que es justo lo que el ADR promete mitigar («backups off-box»)</td>
+          <td><code>git init</code> + <code>git remote add origin git@github.com:systemavworks/billka.git</code> + primer commit + <code>push -u origin main</code>. Si el remoto ya se creó con README/LICENSE desde la web, <code>git fetch</code> y <code>--allow-unrelated-histories</code> en el primer merge. El <code>.gitignore</code> ya está listo (cubre <code>.env*</code>, <code>*.key</code>, <code>*.dump</code>)</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-todo">P0-2</span></td>
+          <td><b>Dos ADR 0009 distintos</b> y numeración que colisiona</td>
+          <td>Komanda: 4.464 B, «aceptada (propuesta)», 6 decisiones numeradas, <code>fiscal-kit</code> con semver pinneado. Billka: 73 líneas, «Aceptado», tabla eje/decisión. <b>Mismo número, mismo tema, redacciones y estados distintos</b>. Y peor: los ADR 0001–0009 de Billka reutilizan números de Komanda con otros significados (Komanda 0007 = doble captura QR · 0008 = emisión SIGN ES; Billka 0007 = <code>no-colaborador-social</code> · 0008 = <code>territories</code>)</td>
+          <td>Billka usa prefijo propio (<code>B0001-…</code>) o arranca en <code>0010</code>; su 0009 queda como <b>puntero de 3 líneas</b> al canónico de Komanda</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-todo">P0-3</span></td>
+          <td><b><code>es.billka.fiskal</code> con K</b></td>
+          <td>El módulo es <code>fiscal-kit</code>, los docs <code>fiscal/</code>, en core <code>domain/fiscal</code>… y el paquete Kotlin es <code>fiskal</code> (ortografía alemana). Hoy es mover 26 rutas vacías; con imports escritos es un refactor con <code>git blame</code> roto</td>
+          <td>Renombrar a <code>es.billka.fiscal</code> <b>antes</b> del primer import</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-todo">P0-4</span></td>
+          <td><b>Los 84 <code>.kt</code> no compilan</b></td>
+          <td>Todos son <code>// TODO</code> + <code>export {};</code>, que es <b>sintaxis TypeScript</b> dentro de Kotlin (bug del generador). El día que escribas <code>Application.kt</code> de verdad, <code>gradle build</code> escupe 84 errores que sepultan el tuyo</td>
+          <td>O stubs válidos (<code>package es.billka.core</code> + <code>internal object TODO</code>) o —mejor— <b>borrar los ficheros vacíos</b> y dejar un <code>README.md</code> por capa. Un árbol sin ficheros es honesto; 84 ficheros con sintaxis rota no</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-todo">P0-5</span></td>
+          <td><b>Licencia contradictoria: dominio público en el remoto vs. propietaria en local</b></td>
+          <td><code>github.com/systemavworks/billka</code> es <b>público</b>, rama <code>main</code>, <b>1 commit</b> con un <code>README.md</code> de 8 bytes (literalmente <code># billka</code>) y un <code>LICENSE</code> de 1.211 B que es la <b>Unlicense</b>: «This is free and unencumbered software <b>released into the public domain</b>… for any purpose, commercial or non-commercial». (La barra lateral de GitHub lo etiqueta como «Apache-2.0»: la propia plataforma se contradice con el fichero.) El <code>LICENSE</code> local dice «Billka · Licencia propietaria · Todos los derechos reservados». Son incompatibles: al hacer el primer push, el fichero local sustituye al del remoto, pero el commit histórico con la dedicación al dominio público <b>sigue siendo público para siempre</b></td>
+          <td>Decidir <b>antes</b> del primer push: (a) propietaria → cambiar el <code>LICENSE</code> del remoto en su propio commit <i>antes</i> de subir el árbol, o (b) asumir dominio público (imposible de vender con exclusividad), o (c) <b>repo privado</b> si el producto se va a comercializar. Es la única acción de este informe que no tiene vuelta atrás</td>
+        </tr>
+      </tbody>
+    </table>
+    <pre><code>// core/src/main/kotlin/es/billka/core/Application.kt   (2 líneas, tal cual está hoy)
+// TODO: implementar core/src/main/kotlin/es/billka/core/Application.kt
+export {};   // &lt;-- esto es TypeScript, no Kotlin: 84 ficheros igual</code></pre>
+  </section>
+  <section id="p1">
+    <h2><span class="dot"></span>P1 · El ADR promete cosas que el artefacto no hace</h2>
+    <p class="lead">Incoherencias entre decisiones escritas y lo implementado. Todas se arreglan <b>sin escribir lógica fiscal</b>.</p>
+    <table>
+      <thead><tr><th>#</th><th>Hallazgo</th><th>Detalle</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-warn">P1-6</span></td>
+          <td><b>Dos Caddys en la misma caja</b> (y ACME imposible)</td>
+          <td>El ADR 0009 dice: «Caddy sirve ambos dominios (<code>komanda.es</code>, <code>billka.es</code>) por virtual hosts» → <b>uno</b>. Pero <code>infra/docker/docker-compose.yml</code> levanta <b>su propio Caddy</b> en <code>8088:80</code> / <code>8443:443</code>, mientras <code>komanda/infra/docker-compose.prod.yml</code> ya ocupa <code>80</code> y <code>443</code>. Consecuencia: <code>billka.es</code> no puede emitir certificado (ACME exige 80/443) y hay dos reverse proxies que nadie ha decidido</td>
+          <td>O el Caddy de Komanda gana un vhost <code>billka.es</code> y Billka deja de publicar caddy, o Billka va a IP/caja propia. Y escribirlo en el ADR</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-7</span></td>
+          <td><b>«Límites por contenedor»</b> prometidos y no implementados</td>
+          <td>Es un mitigante literal del «Riesgo aceptado» del ADR 0009, y el compose no tiene <code>mem_limit</code>, <code>cpus</code> ni <code>deploy.resources</code>. En un CAX11 (2 vCPU · 4 GB) con dos stacks, no es cosmético</td>
+          <td>Añadir límites por servicio, y dejar el disparador de disco/CPU ya definido en el ADR</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-8</span></td>
+          <td><b>Secreto con default silencioso</b></td>
+          <td>Billka: <code>${POSTGRES_PASSWORD:-change-me-now}</code> → arranca sin <code>.env</code> con contraseña conocida. Komanda ya tiene el patrón bueno: <code>${DOMAIN:?define tu dominio en .env.prod}</code></td>
+          <td>Unificar a <code>:?</code> para secretos (<code>POSTGRES_PASSWORD</code>, <code>JWT_SECRET</code>): fallar rápido es la única opción segura</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-9</span></td>
+          <td><b>Postgres sin <code>healthcheck</code></b></td>
+          <td>Komanda dev sí lo tiene (<code>pg_isready -U postgres</code>). Billka no → <code>core</code> puede arrancar antes de que PG acepte conexiones: el clásico intermitente del primer despliegue</td>
+          <td><code>healthcheck</code> + <code>depends_on: {db: {condition: service_healthy}}</code></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-10</span></td>
+          <td><b><code>env_file</code> obligatorio + <code>backup.sh</code> sin <code>source .env</code></b></td>
+          <td>Verificado: <code>docker compose config</code> <b>aborta</b> sin <code>.env</code> → <code>make down</code>, <code>make logs</code> y <code>make backup</code> fallan en una caja limpia. Y <code>scripts/backup.sh</code> usa <code>${POSTGRES_USER:-billka}</code> del <b>shell</b>, no del <code>.env</code>: puede volcar con usuario/BD equivocados y generar un dump válido de la base equivocada</td>
+          <td>Marcar el <code>env_file</code> como opcional o asegurarlo en los scripts; en <code>backup.sh</code>, <code>set -a; . ./.env; set +a</code> antes del <code>pg_dump</code></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-11</span></td>
+          <td><b><code>pg_dump</code> sin <code>-Fc</code></b> con nombre <code>.dump</code></td>
+          <td>El runbook <code>docs/runbook/backup-restore.md</code> espera formato custom (<code>pg_restore</code>), pero el script genera SQL plano: un restore «según el runbook» fallaría con el dump real</td>
+          <td>Decidir uno y alinear runbook + script: <code>-Fc</code> + <code>pg_restore</code>, o <code>.sql</code> + <code>psql</code></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-12</span></td>
+          <td><b><code>restore.sh</code> sale con código 0</b> diciendo «pendiente»</td>
+          <td>Si algún día entra en un cron o en un procedimiento de emergencia, un restore que no restaura nada se lee como éxito. (<code>deploy.sh</code> ya hace lo correcto: <code>exit 1</code>)</td>
+          <td><code>exit 1</code> mientras no exista el restore real</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-13</span></td>
+          <td><b>No hay <code>gradlew</code> y <code>make test</code> no existe</b></td>
+          <td><code>test</code> está en <code>.PHONY</code> pero <b>sin regla</b>: <code>make test</code> falla y no hay definición de «verde» para Billka. Además el host tiene JDK <b>25</b> + Gradle 8, mientras <code>Dockerfile.core</code> usa <code>eclipse-temurin:21-jre</code></td>
+          <td>Wrapper de Gradle + <code>jvmToolchain(21)</code> para igualar el runtime + target <code>test</code> real</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-warn">P1-14</span></td>
+          <td><b>El <code>build.gradle.kts</code> de core no declara nada de lo que promete</b></td>
+          <td>Solo <code>kotlin jvm 2.1.0</code> + <code>application</code> + <code>project(":fiscal-kit")</code>. Faltan Ktor 3, Exposed, Hikari, Flyway, driver Postgres, JWT y logback — justo el stack que el roadmap de Komanda ya usa. Y no hay <i>version catalog</i> ni <code>gradle.properties</code> con versiones pinneadas</td>
+          <td>Añadirlos con <code>libs.versions.toml</code> cuando se arranque de verdad; hoy basta con <b>no</b> fingir que el esqueleto compila un servidor</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note"><b>El hilo común de todo P1:</b> ninguna de estas incoherencias es de código, son de <b>contrato entre documentos y ficheros</b>. Es exactamente el tipo de deriva que en Komanda ya hemos corregido a mano (badges del roadmap, V1–V33 → V1–V38): aquí todavía es gratis porque el árbol está vacío.</div>
+  </section>
+  <section id="p2">
+    <h2><span class="dot"></span>P2 · Contratos: donde se decide si Billka sirve de verdad</h2>
+    <p class="lead">Esto no es «calidad de código»: es la frontera entre Billka y Komanda, y entre Billka y la AEAT.</p>
+    <table>
+      <thead><tr><th>#</th><th>Hallazgo</th><th>Detalle</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-info">P2-15</span></td>
+          <td><b>El check de contratos da verde sin comprobar nada</b></td>
+          <td><code>LOCK.json</code> tiene <code>"status": "draft"</code> y <code>"files": {}</code> → <code>check.py</code> imprime <code>CONTRACTS_OK_DRAFT</code> y <b>sale con 0</b> (verificado). Es el «falso verde» que llevamos meses eliminando en Komanda: un CI que dice OK sin haber validado. Además solo hace <code>json.loads</code>: no valida con <code>jsonschema</code>, no comprueba que la carpeta coincida con el <code>type</code> del schema, ni que los <code>$id</code> sean únicos</td>
+          <td>Que el modo «draft» requiera un flag explícito (<code>--draft</code>) y que sin LOCK fijado <b>falle</b>; añadir validación real (~15 líneas de Python)</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-info">P2-16</span></td>
+          <td><b>Los 5 schemas no validan nada</b></td>
+          <td>Todos son iguales: <code>"data": { "type": "object" }</code>, <code>"additionalProperties": true</code> y <code>"x-status": "draft"</code>. El envelope (CloudEvents) sí está tipado, pero el contenido —lo único que importa— es un objeto libre. Un contrato así no detecta ni un cambio incompatible</td>
+          <td>Antes de congelar: <code>additionalProperties: false</code> en el envelope y <code>data</code> con <code>required</code> reales por evento (<code>invoice.issued</code>, <code>invoice.cancelled</code>, <code>chain.anchored</code>, <code>sign.es.completed</code>, <code>cotejo.aeat.done</code>)</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-info">P2-17</span></td>
+          <td><b>Contratos duplicados respecto a Komanda</b></td>
+          <td>Billka define <code>invoice.issued</code> / <code>invoice.cancelled</code> por su cuenta, mientras Komanda ya tiene su propia copia del mismo concepto. Dos fuentes de verdad del <b>mismo</b> evento es la antesala de que diverjan en silencio (y entonces el «kit compartido» deja de ser compartido)</td>
+          <td>Un solo <code>contracts/</code> (el de Komanda) y Billka como <b>consumidor pinneado</b> — que es literalmente lo que dice el ADR 0009 canónico</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-info">P2-18</span></td>
+          <td><b>Faltan los vectores de prueba fiscales</b></td>
+          <td>Sin fixtures compartidos no hay forma de demostrar que Billka calcula igual que Komanda. Y la cadena de hash / QR Verifactu es <b>exactamente</b> el sitio donde dos implementaciones «correctas» divergen y la AEAT rechaza</td>
+          <td>Un <code>fixtures/</code> compartido: N facturas con (entrada → hash, huella, QR esperado, XML) reutilizado por ambos repos y ejecutado en los dos CI</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note note-warn"><b>El riesgo real, dicho sin rodeos:</b> hoy el CI de contratos está en verde y no ha validado absolutamente nada. Si mañana Billka empieza a emitir eventos con el <code>data</code> sin tipar, ese verde seguirá apareciendo mientras la integración con Komanda se rompe en producción. Es el único punto de este informe donde un «OK» puede costar dinero.</div>
+  </section>
+
+  <section id="limpieza">
+    <h2><span class="dot"></span>Limpieza · lo que sobra (borrar hoy, gratis)</h2>
+    <table>
+      <thead><tr><th>Qué</th><th>Por qué borrarlo</th></tr></thead>
+      <tbody>
+        <tr><td>84 <code>.kt</code> con <code>export {};</code></td><td>No compilan y no aportan intención: 2 líneas de <code>// TODO</code>. Un <code>README.md</code> por capa dice lo mismo y no miente</td></tr>
+        <tr><td>22 stubs de <code>fiscal-kit/</code></td><td>Mismo caso, encima con el paquete mal escrito (<code>fiskal</code>)</td></tr>
+        <tr><td><code>V001…V010__*.sql</code> de 3 líneas</td><td>10 migraciones vacías dan la falsa sensación de esquema definido. Mejor un <code>migrations/README.md</code> con el orden previsto</td></tr>
+        <tr><td>ADR 0001–0008 de 5 líneas</td><td>Un ADR sin «Contexto / Decisión / Consecuencias» no es un ADR: renumerar y escribir solo los que de verdad se deciden (o enlazar al canónico de Komanda)</td></tr>
+        <tr><td><code>Dockerfile.core</code> y <code>Dockerfile.web</code> con <code>sleep infinity</code></td><td>Un Dockerfile que no construye nada pero <i>parece</i> que sí es peor que no tenerlo</td></tr>
+        <tr><td><code>seed-demo.sh</code> y <code>e2e.sh</code> que solo hacen <code>echo</code></td><td>Y <code>restore.sh</code> que sale con 0. Scripts que dicen hacer y no hacen (P1-11 y P1-12)</td></tr>
+        <tr><td><code>hetzner/cloud-init.yaml</code> y <code>firewall.rules</code></td><td>1 línea <code>TODO</code> cada uno: no protegen nada y dan por hecha la parte de infra que sigue pendiente</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section id="huecos">
+    <h2><span class="dot"></span>Lo que no existe (y aún nadie ha echado en falta)</h2>
+    <p class="lead">El árbol tiene <i>forma</i> de producto fiscal completo, pero ninguna de estas piezas está escrita. Ordenadas por lo que dolerá si se dejan para el final.</p>
+    <table>
+      <thead><tr><th>Pieza</th><th>Estado real</th><th>Cuándo duele</th></tr></thead>
+      <tbody>
+        <tr><td><b>Esquema SQL de verdad</b></td><td>10 migraciones vacías, 0 tablas</td><td>Todo lo demás (core, web, contratos) depende de él → es lo <b>primero</b> que hay que escribir</td></tr>
+        <tr><td><b>Núcleo fiscal</b> (hash chain, QR, Verifactu)</td><td>Solo documentación (<code>docs/fiscal/*</code>)</td><td>Es el motivo de existir de Billka; sin vectores de prueba no hay forma de saber si es correcto</td></tr>
+        <tr><td><b>Servidor Ktor</b></td><td>0 rutas, 0 dependencias declaradas</td><td>El <code>Dockerfile.core</code> no puede construir nada (P1-14)</td></tr>
+        <tr><td><b>Auth / multi-tenant</b></td><td><code>tenant_id</code> aparece en el envelope de eventos… y en ningún otro sitio</td><td>Meter multi-tenancy después de tener tablas es un refactor de todo el esquema</td></tr>
+        <tr><td><b>Tests</b></td><td><code>make test</code> sin regla; <code>web</code> con <code>echo</code>; 2 <code>.kt</code> y 3 <code>.sql</code> con <code>TODO</code></td><td>Sin rojo no hay verde: cualquier «funciona» es una opinión</td></tr>
+        <tr><td><b>Observabilidad</b></td><td>Prometheus y alertas escritos, pero no hay nada que emita métricas</td><td>Bajo, pero es deuda silenciosa: las alertas parecerán que cubren algo</td></tr>
+        <tr><td><b>Backups off-box</b></td><td><code>backup.sh</code> local + <code>.gitignore</code> que ignora <code>backups/</code></td><td>El ADR promete «backups off-box» como mitigante del riesgo aceptado: hoy no existe ni el off-box ni el restore</td></tr>
+        <tr><td><b>Dominio y TLS</b></td><td><code>billka.es</code> solo en el ADR; Caddy en 8088/8443 (P1-6)</td><td>El día que se quiera enseñar el producto a alguien</td></tr>
+        <tr><td><b>Cumplimiento</b> (RGPD, LOPDGDD, conservación 4/6 años)</td><td>Mencionado en <code>docs/</code>, sin modelo de datos que lo soporte</td><td>Cuando entre el primer cliente real: la ley no espera al refactor</td></tr>
+        <tr><td><b>Modelo de negocio</b> (planes, límites, facturación)</td><td>Ausente del árbol por completo</td><td>Es la decisión que condiciona el esquema: mejor tenerla antes de la primera tabla</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Ninguna de estas ausencias es un defecto.</b> Un <code>scaffold</code> vacío es exactamente eso. El problema sería creer que Billka «ya está montado» porque el árbol lo parezca: el propio README dice «no hay lógica fiscal» y esa honestidad es el mejor activo del repo.</div>
+  </section>
+  <section id="veredicto">
+    <h2><span class="dot"></span>Veredicto</h2>
+    <p class="lead">Separando dos cosas que se confunden todo el rato: el <b>plan</b> de Billka y el <b>contenido</b> de Billka.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h4><span class="badge b-ok">Vale</span> &nbsp;El andamiaje</h4>
+        <p>La decisión de <b>no</b> separar la caja aún está bien razonada, los puertos no colisionan, la red está bien cerrada, el <code>.gitignore</code> es serio y los contratos usan CloudEvents. Es el 80 % de lo que se suele hacer mal en un segundo producto, y aquí está hecho.</p>
+        <ul>
+          <li>Frontera Komanda/Billka explícita y verificada</li>
+          <li>Compose real, idempotente y sin solapes</li>
+          <li>ADR con riesgos aceptados y disparadores</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="badge b-todo">No vale</span> &nbsp;El contenido</h4>
+        <p>204 ficheros que <b>no compilan, no construyen y no prueban nada</b>, y un CI de contratos que dice OK sin validar. No es que falte código: es que lo que hay <i>simula</i> estar terminado, y una simulación se vuelve deuda el día que te la crees.</p>
+        <ul>
+          <li>84 <code>.kt</code> con sintaxis TypeScript</li>
+          <li><code>make test</code> inexistente, <code>restore.sh</code> con <code>exit 0</code></li>
+          <li>Contratos en verde sin contenido (<code>files: {}</code>)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note note-warn"><b>La frase que resume el informe:</b> Billka hoy es un <b>plan de negocio con extensión <code>.kt</code></b>. Y eso, siendo honestos, es más valioso que un repo con 5.000 líneas escritas sin haber decidido nada — pero solo si mañana se hace el trabajo de las dos primeras columnas del plan (P0 y P1) antes de escribir la primera línea de lógica fiscal.</div>
+    <div class="stack">
+      <span class="chip"><b>5</b> P0</span>
+      <span class="chip"><b>9</b> P1</span>
+      <span class="chip"><b>4</b> P2 (contratos)</span>
+      <span class="chip"><b>7</b> ficheros a borrar</span>
+      <span class="chip"><b>0</b> líneas de código real</span>
+    </div>
+  </section>
+  <section id="manana">
+    <h2><span class="dot"></span>Plan para mañana · 45 minutos y el árbol cambia de categoría</h2>
+    <p class="lead">Todo P0 cabe en una sesión corta, y ninguna de estas acciones escribe lógica fiscal.</p>
+    <h3>Bloque 1 · versionar (10 min)</h3>
+    <pre><code>cd ~/Desarrollo/saas_proyectos/billka
+git init -b main
+git remote add origin git@github.com:systemavworks/billka.git
+git fetch origin                      # el remoto ya tiene 1 commit: LICENSE + README
+git reset --mixed origin/main         # partir del remoto, sin duplicar historia
+# ... decidir licencia (P0-5): el remoto es Unlicense/dominio público, el local es propietaria
+git add -A
+git commit -m "scaffold: árbol Billka v0.1 (sin lógica fiscal)"
+git push -u origin main</code></pre>
+    <h3>Bloque 2 · sanear el árbol (15 min)</h3>
+    <pre><code># P0-3: paquete mal escrito, 26 rutas, 0 imports → gratis hoy
+git mv fiscal-kit/src/main/kotlin/es/billka/fiskal fiscal-kit/src/main/kotlin/es/billka/fiscal
+# P0-4: los stubs no compilan (export {}; es TypeScript) → borrar y dejar README por capa
+grep -rl 'export {};' --include='*.kt' . | xargs rm
+# P0-2: numeración de ADR que colisiona con Komanda
+#   billka/docs/adr/0009-*  →  puntero de 3 líneas al ADR 0009 canónico de Komanda
+#   billka/docs/adr/0001-0008 → renumerar con prefijo B (B0001-…)</code></pre>
+    <h3>Bloque 3 · no mentir en los scripts (15 min)</h3>
+    <pre><code># P1-12
+sed -i 's/^exit 0$/exit 1/' scripts/restore.sh
+# P1-10: backup.sh debe leer el .env, no el entorno del shell
+#   añadir al inicio:  set -a; . ./.env; set +a
+# P1-11: -Fc en pg_dump (y pg_restore en el runbook)  ó  .sql + psql
+# P1-8: ${POSTGRES_PASSWORD:-change-me-now} → ${POSTGRES_PASSWORD:?define .env}
+# P1-13: gradle wrapper + regla real para `make test`</code></pre>
+    <div class="note note-ok"><b>Resultado esperado al terminar:</b> repo versionado, árbol que compila (porque ya no hay ficheros falsos), scripts que no devuelven éxito cuando no han hecho nada y un ADR único por decisión. Sin escribir una línea de dominio.</div>
+  </section>
+  <section id="despues">
+    <h2><span class="dot"></span>Después · el orden en el que sí funciona</h2>
+    <p class="lead">La tentación es empezar por el QR o por la pantalla bonita. El orden que no genera retrabajo:</p>
+    <table>
+      <thead><tr><th>#</th><th>Paso</th><th>Por qué antes que el siguiente</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>Modelo de datos + 3 migraciones reales</b> (tenant, factura, cadena)</td><td>Todo lo demás se apoya en esto; cambiarlo después obliga a reescribir contratos y tests</td></tr>
+        <tr><td>2</td><td><b>Vectores de prueba fiscales</b> (entrada → huella/QR/XML)</td><td>Se escriben <i>antes</i> del código: es la única forma de que la implementación sea verificable y comparable con Komanda</td></tr>
+        <tr><td>3</td><td><b>fiscal-kit</b> contra esos vectores, con tests en verde</td><td>Es el corazón del producto y lo único que después no se puede improvisar</td></tr>
+        <tr><td>4</td><td><b>Schemas de eventos con <code>required</code> reales</b> + <code>check.py</code> honesto</td><td>Antes de emitir el primer evento: en cuanto haya consumidores, cada cambio cuesta una migración</td></tr>
+        <tr><td>5</td><td><b>Ktor + 2 endpoints</b> (<code>POST /invoices</code>, <code>GET /health</code>)</td><td>Con esquema, tests y contratos ya decididos, el servidor es lo fácil</td></tr>
+        <tr><td>6</td><td><b>Web mínima</b> (emitir + listar + ver QR)</td><td>Solo cuando el backend ya emite facturas válidas de verdad</td></tr>
+        <tr><td>7</td><td><b>Infra de verdad</b> (Dockerfiles multi-stage, límites, healthchecks, off-box)</td><td>Al final: desplegar antes de tener producto solo añade superficie de fallo</td></tr>
+      </tbody>
+    </table>
+    <h3>Las tres decisiones que piden papel y no código</h3>
+    <div class="grid g3">
+      <div class="card">
+        <h4><span class="badge b-violet">D1</span> &nbsp;Licencia</h4>
+        <p>El remoto es <b>público</b> y su <code>LICENSE</code> es la <b>Unlicense</b> (dominio público, 1.211 B); el árbol local dice propietaria. Si Billka se va a vender, el repo debería ser privado — y cuanto antes: el commit ya publicado con la dedicación al dominio público no se puede «despublicar» del todo.</p>
+      </div>
+      <div class="card">
+        <h4><span class="badge b-violet">D2</span> &nbsp;Caddy: ¿uno o dos?</h4>
+        <p>El ADR dice uno (virtual hosts); el compose dice dos. Decidir y escribir el ganador <b>en el ADR</b>, no en el compose, o el próximo que lea el repo elegirá otra vez al azar.</p>
+      </div>
+      <div class="card">
+        <h4><span class="badge b-violet">D3</span> &nbsp;¿Qué es Billka?</h4>
+        <p>¿Producto independiente con su propia caja, o «Komanda para autónomos» compartiendo <code>fiscal-kit</code>? El ADR apunta a lo segundo; el árbol (Caddy propio, contratos propios, compose propio) dice lo primero.</p>
+      </div>
+    </div>
+  </section>
+  <section id="verificacion">
+    <h2><span class="dot"></span>Verificación · qué se ejecutó de verdad</h2>
+    <p class="lead">Nada de este informe viene de leer por encima: cada fila se comprobó con el comando que aparece al lado.</p>
+    <table>
+      <thead><tr><th>Comprobación</th><th>Comando</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Tamaño del árbol</td><td><code>find . -type f | wc -l</code> · <code>du -sh</code></td><td>204 ficheros · 2,6 MB</td></tr>
+        <tr><td>Kotlin real</td><td><code>find . -name '*.kt' | xargs wc -l</code></td><td>~512 líneas, todas <code>// TODO</code></td></tr>
+        <tr><td>Sintaxis rota</td><td><code>grep -rl 'export {};' --include='*.kt' .</code></td><td>84 ficheros con TypeScript en Kotlin</td></tr>
+        <tr><td>Contratos</td><td><code>python3 contracts/check.py</code></td><td><span class="badge b-warn">CONTRACTS_OK_DRAFT</span> con <code>files: {}</code> y <code>exit 0</code></td></tr>
+        <tr><td>Compose sin <code>.env</code></td><td><code>docker compose -f infra/docker/docker-compose.yml config</code></td><td><b>aborta</b>: variable obligatoria sin definir (P1-10)</td></tr>
+        <tr><td>JSON válido</td><td><code>python3 -m json.tool</code> sobre 5 schemas + <code>LOCK.json</code></td><td>Todos parsean — es todo lo que se valida hoy</td></tr>
+        <tr><td>Puertos vs. Komanda</td><td>grep de <code>ports:</code> en los cuatro compose</td><td><span class="badge b-ok">Sin solapes</span></td></tr>
+        <tr><td>Estado local</td><td><code>git status</code> en <code>billka/</code></td><td>Ni repositorio ni carpeta superior con <code>.git</code> (P0-1)</td></tr>
+        <tr><td>Estado del remoto</td><td><code>github.com/systemavworks/billka</code></td><td>Público · <code>main</code> · 1 commit · <code>README.md</code> de 8 B (<code># billka</code>) + <code>LICENSE</code> = <b>Unlicense</b>, 1.211 B (P0-5)</td></tr>
+        <tr><td>Dependencias del core</td><td>lectura de <code>core/build.gradle.kts</code></td><td>Kotlin + <code>application</code> + <code>:fiscal-kit</code>. Nada más (P1-14)</td></tr>
+        <tr><td>Wrapper y tests</td><td><code>ls gradlew</code> · <code>make -n test</code></td><td>No hay wrapper · regla inexistente pese al <code>.PHONY</code> (P1-13)</td></tr>
+        <tr><td>Scripts honestos</td><td>lectura de <code>scripts/{backup,restore,seed-demo,e2e,deploy}.sh</code></td><td><code>restore.sh</code> → <code>exit 0</code>; <code>backup.sh</code> sin <code>source .env</code> y con <code>pg_dump</code> plano (P1-10/11/12)</td></tr>
+        <tr><td>Documentación</td><td><code>wc -l docs/adr/*.md</code></td><td>0001–0008: 5 líneas cada uno; 0009 y <code>fiscal/*</code> sí tienen contenido</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Método y alcance:</b> auditoría estática del árbol (sin arrancar servicios), más contraste con <code>komanda/</code> para frontera, puertos, contratos y ADRs. Fecha: 8-nov-2026. No se ha modificado ni un fichero del scaffold: este documento es el único artefacto nuevo.</div>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    Billka · auditoría del <code>scaffold</code> · estado del 8-nov-2026 · documento histórico<br>
+    Estado actual: <a href="billka_roadmap.html">billka_roadmap.html</a> · técnica: <code>ARCHITECTURE.md</code>
+  </div>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

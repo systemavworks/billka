@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://billka.es/contracts/envelope.schema.json",
+  "title": "Billka event envelope (CloudEvents 1.0 + extensiones)",
+  "type": "object",
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "schemaversion",
+    "time",
+    "tenantid",
+    "datacontenttype",
+    "data"
+  ],
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUIDv7 generado por el emisor; clave de idempotencia (outbox.event_id UNIQUE)"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "p. ej. billka/core, billka/worker/chain, billka/worker/sign"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "schemaversion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Momento en que ocurrió (occurred_at), no el de publicación"
+    },
+    "tenantid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Mismo nombre que el envelope de Komanda (sin guion bajo) para que la convergencia del ADR 0009 sea un renombrado, no una traducción"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Entidad afectada, p. ej. invoice/<uuid>"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "data": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

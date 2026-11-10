@@ -1,0 +1,8 @@
+# Scaffold Billka web.
+# Imagen placeholder hasta implementar Next.js real.
+FROM node:22-alpine
+WORKDIR /app
+RUN addgroup -S billka && adduser -S billka -G billka
+USER billka
+EXPOSE 3000
+CMD ["sh", "-c", "echo 'Billka web scaffold pendiente de implementar. Puerto 3000.' && sleep infinity"]

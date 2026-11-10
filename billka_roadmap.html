@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billka — integridad fiscal verificable · producto y hoja de ruta</title>
+<meta name="description" content="Billka: capa de integridad y cotejo fiscal que convive con el sistema de facturación del cliente. Qué es, qué no es, en qué estado está y en qué orden se construye.">
+<style>
+  :root{
+    --bg:#fbfaf8; --panel:#ffffff; --panel2:#f5f2ee; --ink:#1f2328; --muted:#6f6a63;
+    --line:#eae5de; --brand:#b45f2e; --brand2:#8a4a24; --ok:#2e7d5b; --warn:#a9750f;
+    --todo:#b23a2e; --info:#2b6cb0; --violet:#6b46c1;
+    --radius:16px; --shadow:0 1px 2px rgba(40,32,24,.04),0 10px 30px rgba(40,32,24,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif}
+  a{color:var(--info);text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+  header{padding:56px 0 34px;background:linear-gradient(180deg,#ffffff,#fbfaf8);border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:36px;letter-spacing:-.6px;font-weight:650}
+  h1 .k{color:var(--brand)}
+  .sub{color:var(--muted);margin-top:8px;font-size:15px;letter-spacing:.02em}
+  .tagline{margin-top:20px;background:var(--panel);border:1px solid var(--line);
+    border-left:3px solid var(--brand);padding:14px 18px;border-radius:12px;box-shadow:var(--shadow);
+    font-size:16px;color:#33302c}
+  .brand{display:flex;align-items:center;gap:20px}
+  .brand .logo{height:88px;width:auto;flex:0 0 auto;border-radius:14px;
+    filter:drop-shadow(0 8px 18px rgba(40,32,24,.16))}
+  @media(max-width:600px){.brand{gap:14px}.brand .logo{height:60px}}
+  main{padding:10px 0 70px}
+  section{padding:30px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:0 0 6px;font-weight:640;display:flex;align-items:center;gap:11px;letter-spacing:-.2px}
+  h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+  h3{font-size:16px;margin:22px 0 8px;font-weight:640}
+  p.lead{color:var(--muted);margin:0 0 18px;font-size:15px;max-width:840px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 8px;font-size:15px;font-weight:640}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+  .card li{margin:4px 0}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+  .b-ok{background:#eaf6f0;color:var(--ok);border:1px solid #cfe9dd}
+  .b-warn{background:#fbf3e2;color:var(--warn);border:1px solid #efe0bd}
+  .b-todo{background:#fbeceb;color:var(--todo);border:1px solid #f0d4d1}
+  .b-info{background:#eaf1fb;color:var(--info);border:1px solid #d3e2f6}
+  .b-violet{background:#f0ecfb;color:var(--violet);border:1px solid #ddd3f4}
+  .stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:13px}
+  .chip b{color:var(--brand2)}
+  code{background:#f3f0ec;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;color:#5a5049}
+  pre{background:#f3f0ec;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;
+    font-size:13px;color:#3d3730;margin:10px 0}
+  pre code{background:none;border:none;padding:0}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin:2px 0 18px}
+  .kpi{display:flex;gap:34px;flex-wrap:wrap;margin:8px 0}
+  .kpi .n{font-size:28px;font-weight:680;color:var(--ink);letter-spacing:-.5px}
+  .kpi .l{color:var(--muted);font-size:13px}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--violet);
+    border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:14px;color:#33302c;margin:14px 0}
+  .note b{color:var(--violet)}
+  .note-warn{border-left-color:var(--todo)}
+  .note-warn b{color:var(--todo)}
+  .note-ok{border-left-color:var(--ok)}
+  .note-ok b{color:var(--ok)}
+  footer{padding:30px 0 50px;color:var(--muted);font-size:13px;text-align:center}
+  /* --- añadidos de la versión de producto --- */
+  a:hover{text-decoration:underline}
+  .card.no{border-left:3px solid var(--todo)}
+  .card.yes{border-left:3px solid var(--ok)}
+  .stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow);margin:14px 0}
+  .stage .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .stage .id{font-weight:700;color:var(--brand2);font-size:13px;letter-spacing:.08em}
+  .stage h4{margin:0;font-size:17px;font-weight:650}
+  .stage .meta{color:var(--muted);font-size:13px;margin:6px 0 0}
+  .stage ul{margin:10px 0 0;padding-left:18px;color:#3d3730;font-size:14px}
+  .stage li{margin:4px 0}
+  .stage .exit{margin-top:12px;background:#f3f0ec;border-radius:10px;padding:10px 14px;font-size:13.5px;color:#3d3730}
+  .stage .exit b{color:var(--brand2)}
+  .stage.done{border-left:4px solid var(--ok)}
+  .stage.next{border-left:4px solid var(--brand)}
+  .stage.later{border-left:4px solid var(--line)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <img class="logo" alt="Billka" src="logo_billka.jpeg">
+      <div>
+        <h1><span class="k">Billka</span> — integridad fiscal verificable</h1>
+        <div class="sub">Capa de integridad y cotejo que convive con el sistema de facturación del cliente ·
+          presentación y hoja de ruta · 10-nov-2026</div>
+      </div>
+    </div>
+    <div class="tagline">Cada factura encadenada con su huella SHA-256, tramos sellados con anclaje periódico y
+      cotejo puntual contra la AEAT cuando lo pides. <b>Fuera de tu sistema, no dentro:</b> no lo sustituye,
+      no lo copia y no lo lee si no hace falta.</div>
+  </div>
+</header>
+<main class="wrap">
+
+  <section id="que-es">
+    <h2><span class="dot"></span>Qué es Billka</h2>
+    <p class="lead">Quien ya emite facturas con su programa no necesita otro programa: necesita poder
+      <b>demostrar</b> que lo que emitió no se ha tocado después. Billka se coloca al lado de su sistema
+      actual y produce esa prueba.</p>
+    <div class="grid g4">
+      <div class="card"><h4>Encadenado por registro</h4><p>Cada factura emitida genera una huella SHA-256 que
+        incluye la huella anterior. Cambiar una factura de hace un año rompe la cadena en ese punto y en todos
+        los posteriores, y el cliente puede verificarlo sin creernos.</p></div>
+      <div class="card"><h4>Sellado de tramos</h4><p>La cadena se cierra periódicamente con un anclaje:
+        huella del tramo, recuento y marca temporal. Un tramo sellado ya no se puede reescribir «hacia atrás»
+        sin dejar rastro.</p></div>
+      <div class="card"><h4>QR de verificación</h4><p>El receptor escanea el QR de su factura y ve el mismo
+        contenido que guardamos, con su huella. Es un QR <b>propio de verificación</b>, no el QR de
+        VeriFactu.</p></div>
+      <div class="card"><h4>Cotejo puntual AEAT</h4><p>A petición, se contrasta una factura concreta con lo
+        que la AEAT tiene registrado de ti. Puntual y bajo demanda: sin barridos masivos ni scraping.</p></div>
+    </div>
+    <div class="note"><b>Para quién:</b> despachos y empresas que emiten con un ERP o un programa de
+      facturación que no quieren cambiar, y que necesitan <b>evidencia utilizable</b> ante una inspección, un
+      litigio o una due diligence. <b>Para quién no:</b> quien busca que le sustituyan el programa de
+      facturación, o quien espera que Billka le «cumpla» VeriFactu. Eso no es esto.</div>
+  </section>
+
+  <section id="que-no-es">
+    <h2><span class="dot"></span>Qué no es (y conviene decirlo antes)</h2>
+    <p class="lead">La mayor parte del daño de un producto fiscal se hace en la primera conversación, cuando se
+      promete de más. Estas cuatro frases están también en el repositorio, no solo en esta página.</p>
+    <div class="grid g2">
+      <div class="card no"><h4>No es un SIF ni sustituye a VeriFactu</h4><p>Si el cliente está obligado a
+        usar un sistema de emisión con registro, esa obligación sigue siendo suya y del programa que declare.
+        Billka produce evidencia; no asume la condición de sistema de facturación.</p></div>
+      <div class="card no"><h4>Su QR no es el QR de VeriFactu</h4><p>Un QR propio no equivale a cumplimiento
+        normativo. Cuando el cliente necesite el QR de VeriFactu, lo genera su SIF; Billka añade el suyo de
+        verificación al lado.</p></div>
+      <div class="card no"><h4>No es auditoría contable ni asesoría fiscal</h4><p>No revisamos cuentas ni
+        firmamos opiniones. La auditoría de cuentas es actividad regulada y este producto no la ejerce: hablamos
+        de <b>integridad de registros</b> y de <b>cotejo</b>.</p></div>
+      <div class="card no"><h4>No es un colaborador social</h4><p>No somos Suministrador de Información
+        Inmediata (ADR <code>B0007</code>): no hay suministro continuo de datos a la AEAT, solo cotejo puntual
+        cuando el cliente lo pide.</p></div>
+    </div>
+  </section>
+
+  <section id="enfoque">
+    <h2><span class="dot"></span>Cómo se enfoca</h2>
+    <p class="lead">Ocho reglas que deciden el orden del trabajo. No son eslóganes: cada una se puede comprobar
+      en el repositorio hoy.</p>
+    <div class="grid g2">
+      <div class="card"><h4>1 · Evidencia antes que interfaz</h4><p>La huella y la cadena se prueban con
+        vectores antes de pintar una pantalla. Una web bonita sobre una cadena mal calculada es una web que hay
+        que reescribir.</p></div>
+      <div class="card"><h4>2 · El esquema manda</h4><p>Los datos de una factura emitida son inmutables en la
+        base de datos (triggers), no por convención del código. Si la BD lo permite, ocurrirá.</p></div>
+      <div class="card"><h4>3 · Sin vectores no hay código fiscal</h4><p><code>fiscal-kit</code> no se escribe
+        hasta tener pares <code>entrada → huella/QR/XML</code>. Es lo único que después no se puede improvisar
+        ni comparar con Komanda.</p></div>
+      <div class="card"><h4>4 · Nada dice OK sin hacerlo</h4><p>Los scripts fallan cuando no han probado nada y
+        el CI está en rojo mientras no existan los tests (ADR <code>B0011</code>). Un verde falso cuesta más
+        que un rojo honesto.</p></div>
+      <div class="card"><h4>5 · Multi-tenant cerrado por defecto</h4><p>RLS forzado en toda tabla con
+        <code>tenant_id</code>: sin contexto de tenant no se ve ninguna fila. El aislamiento es de la base de
+        datos, no de la consulta (ADR <code>B0006</code>).</p></div>
+      <div class="card"><h4>6 · Separados de Komanda</h4><p>Runtime, base de datos y despliegue propios; se
+        comparte solo la librería <code>fiscal-kit</code> (ADR <code>B0002</code>). Un fallo de Billka no puede
+        tumbar la caja de Komanda.</p></div>
+      <div class="card"><h4>7 · Los fallos se publican</h4><p>Un cotejo no disponible o una firma fallida son
+        eventos de dominio con su estado, no silencios optimistas. El cliente ve lo mismo que
+        nosotros.</p></div>
+      <div class="card"><h4>8 · Dinero en céntimos</h4><p>Columnas enteras <code>*_cents</code>. Ningún
+        <code>float</code> toca un importe: el redondeo fiscal no perdona.</p></div>
+    </div>
+  </section>
+
+  <section id="estado">
+    <h2><span class="dot"></span>Estado real · 10-nov-2026</h2>
+    <p class="lead">Billka <b>no es un producto todavía</b>: es un repositorio con decisiones, contratos y arnés.
+      Esta tabla es la que se puede defender delante de cualquiera, y la que cualquiera puede comprobar con
+      <code>make build</code>, <code>make test</code> y <code>make contracts</code>.</p>
+    <div class="kpi">
+      <div><div class="n">0</div><div class="l">fuentes Kotlin (los 106 stubs se borraron)</div></div>
+      <div><div class="n">0</div><div class="l">migraciones SQL (V1–V3 decididas, no escritas)</div></div>
+      <div><div class="n">0</div><div class="l">tests · <code>make test</code> en rojo a propósito</div></div>
+      <div><div class="n">5</div><div class="l">contratos de evento, todos <code>draft</code></div></div>
+      <div><div class="n">11</div><div class="l">ADRs (<code>B0001</code>–<code>B0011</code>)</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Pieza</th><th>Estado</th><th>Qué significa de verdad</th></tr></thead>
+      <tbody>
+        <tr><td><code>core/</code></td><td><span class="badge b-warn">Vacío pero compila</span></td>
+          <td>Gradle wrapper, Kotlin 2.1, JDK 21: <code>make build</code> → <code>BUILD SUCCESSFUL</code>. Sin Ktor,
+          sin Exposed, sin Flyway, sin JWT: <b>no hay servidor</b></td></tr>
+        <tr><td><code>fiscal-kit/</code></td><td><span class="badge b-todo">Vacío a propósito</span></td>
+          <td>Paquete <code>es.billka.fiscal</code> (<code>fiskal</code> corregido). No se escribe una línea hasta
+          tener vectores: sin vectores, la huella y el QR son opiniones</td></tr>
+        <tr><td><code>contracts/</code></td><td><span class="badge b-warn">Borrador validado</span></td>
+          <td>Sobre CloudEvents + 5 eventos con <code>required</code> reales y ejemplos que deben fallar.
+          <code>--draft</code> en verde, estricto en rojo mientras haya borradores</td></tr>
+        <tr><td><code>migrations/</code></td><td><span class="badge b-todo">0 ficheros</span></td>
+          <td>V1 tenancy · V2 factura · V3 cadena, decididas y ordenadas por dependencias, sin escribir</td></tr>
+        <tr><td><code>tests/</code></td><td><span class="badge b-todo">0 tests</span></td>
+          <td><code>scripts/test.sh</code> cuenta los tests en los XML de JUnit y falla si son 0: Gradle dice
+          «SUCCESSFUL» con 0 tests y ese verde es una mentira</td></tr>
+        <tr><td><code>web/</code></td><td><span class="badge b-warn">Portada</span></td>
+          <td>Next 14 sin auth ni cliente HTTP. No se toca hasta que exista API que consumir</td></tr>
+        <tr><td><code>infra/</code></td><td><span class="badge b-ok">Compose probado</span></td>
+          <td><code>docker compose config -q</code> OK, secretos con <code>:?</code>, healthcheck
+          <code>pg_isready</code> (<code>Up healthy</code>), límites de memoria. Los Dockerfiles siguen siendo
+          <code>sleep infinity</code></td></tr>
+        <tr><td><code>scripts/</code></td><td><span class="badge b-ok">Honestos</span></td>
+          <td>8 scripts, sintaxis validada. <code>backup.sh</code> hace <code>pg_dump -Fc</code> y verifica con
+          <code>pg_restore --list</code>; el ciclo backup → borrar → restore se probó de verdad. Lo que no está
+          hecho sale con 1</td></tr>
+        <tr><td>CI</td><td><span class="badge b-todo">Rojo a propósito</span></td>
+          <td><code>ci.yml</code> y <code>contracts.yml</code> existen y fallan mientras no haya tests ni
+          contratos congelados. El motivo está escrito en el propio workflow, no en un ticket</td></tr>
+        <tr><td>Git</td><td><span class="badge b-warn">Sin commit</span></td>
+          <td>Repositorio inicializado y árbol limpio de basura, pero todavía sin primer push: no hay historial
+          que respalde nada</td></tr>
+      </tbody>
+    </table>
+    <div class="note note-warn"><b>Lo que no existe:</b> ni una factura emitida, ni una huella calculada, ni un
+      cotejo real contra la AEAT, ni una firma con SIGN ES, ni una pantalla que haga algo. Cualquier demo hoy
+      sería una maqueta.</div>
+  </section>
+
+  <section id="etapas">
+    <h2><span class="dot"></span>Hoja de ruta · ocho etapas, cada una con criterio de salida</h2>
+    <p class="lead">Cada etapa termina en algo <b>comprobable con un comando</b>, no en una sensación. Si el criterio
+      no se cumple, la etapa no está cerrada y la siguiente no empieza. No hay fechas: hay condiciones.</p>
+    <div class="legend">
+      <span><span class="badge b-ok">Hecha</span> verificada por ejecución</span>
+      <span><span class="badge b-info">Siguiente</span> la que toca ahora</span>
+      <span><span class="badge b-warn">Pendiente</span> bloqueada por la anterior</span>
+    </div>
+
+    <div class="stage done">
+      <div class="head"><span class="id">ETAPA A</span><h4>Higiene: que el árbol diga la verdad</h4>
+        <span class="badge b-ok">Hecha · 10-nov-2026</span></div>
+      <p class="meta">Coste: una sesión corta. Sin ella, todo lo demás se construye sobre ficheros que no existen
+        de verdad.</p>
+      <ul>
+        <li>Repositorio inicializado; 106 stubs <code>.kt</code> de dos líneas (<code>// TODO</code> +
+          <code>export {};</code>, que es TypeScript dentro de Kotlin y no compila) <b>borrados</b>.</li>
+        <li><code>es.billka.fiskal</code> → <code>es.billka.fiscal</code>: 26 rutas, 0 imports, arreglarlo
+          entonces costaba minutos y después una migración de paquete.</li>
+        <li>ADRs renumerados con prefijo <code>B</code> para no colisionar con los de Komanda; <code>B0009</code>
+          queda como puntero de tres líneas al ADR canónico.</li>
+        <li>Gradle wrapper dentro del repositorio: el build no depende de lo que tenga instalado cada
+          máquina.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> <code>make build</code> → <code>BUILD SUCCESSFUL</code> y cero
+        ficheros de código que no sean código. Cumplido.</div>
+    </div>
+
+    <div class="stage done">
+      <div class="head"><span class="id">ETAPA B</span><h4>No mentir: scripts, secretos y CI</h4>
+        <span class="badge b-ok">Hecha · 10-nov-2026</span></div>
+      <p class="meta">Un <code>exit 0</code> que no ha hecho nada es peor que un fallo: alguien se apoya en él.
+        ADR <code>B0011</code>.</p>
+      <ul>
+        <li><code>restore.sh</code> salía con 0 diciendo «pendiente». Ahora restaura de verdad y el ciclo
+          <b>tabla → backup → DROP → restore</b> se probó recuperando una fila.</li>
+        <li><code>backup.sh</code> con <code>pg_dump -Fc</code> y verificación posterior con
+          <code>pg_restore --list</code>: un backup que no se puede listar no es un backup.</li>
+        <li><code>contracts/check.py</code> reescrito con validación real de <code>date-time</code> RFC 3339
+          (sin dependencias) y <code>LOCK.json</code> como mapa plano de hashes. <code>--lock</code> se niega a
+          congelar borradores.</li>
+        <li>Secretos con <code>${VAR:?}</code>: sin <code>.env</code> el compose aborta en vez de arrancar con
+          <code>change-me-now</code>. <code>make dev</code> genera secretos aleatorios de forma idempotente.</li>
+        <li><code>--env-file .env</code> en scripts y Makefile: Compose busca el <code>.env</code> junto al
+          compose, no en la raíz del repositorio, y esa diferencia ya rompió un arranque.</li>
+        <li><code>scripts/test.sh</code> cuenta los tests en los XML de JUnit y falla si son 0.</li>
+        <li>CI real (<code>ci.yml</code>, <code>contracts.yml</code>) <b>en rojo</b> mientras no haya tests ni
+          contratos congelados, con el motivo escrito dentro del propio workflow.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> ningún script devuelve éxito sin haber hecho su trabajo;
+        <code>docker compose config -q</code> OK; backup y restore probados con datos. Cumplido.</div>
+    </div>
+
+    <div class="stage next">
+      <div class="head"><span class="id">ETAPA C</span><h4>Esquema y arnés de tests</h4>
+        <span class="badge b-info">Siguiente</span></div>
+      <p class="meta">Aquí empieza el código real, y empieza por la base de datos porque todo lo demás se apoya en
+        ella. Todavía <b>sin lógica fiscal</b>: solo el mecanismo.</p>
+      <ul>
+        <li><code>V1__tenancy.sql</code> — <code>pgcrypto</code>, <code>current_tenant_id()</code> leyendo
+          <code>current_setting('app.tenant_id', true)</code>, <code>enable_tenant_rls('tabla')</code> con
+          <code>FORCE ROW LEVEL SECURITY</code> y <code>USING</code> + <code>WITH CHECK</code>. Roles separados
+          <code>billka_owner</code> y <code>billka_app</code> (este último sin <code>BYPASSRLS</code>).</li>
+        <li><code>V2__invoice.sql</code> — <code>invoice_series</code>, <code>invoice</code>,
+          <code>invoice_line</code>: numeración atómica por serie, importes en <code>*_cents</code>, snapshot de
+          emisor y receptor, y trigger que impide modificar una factura ya emitida.</li>
+        <li><code>V3__chain.sql</code> — <code>chain_entry</code> (<code>seq</code>, <code>prev_hash</code>,
+          <code>hash</code>), triggers <i>no update / no delete</i>, <code>verify_chain()</code> y tabla de
+          anclajes.</li>
+        <li><code>tests/db/run.sh</code> — base de datos limpia, migración como dueño y pruebas como usuario de
+          aplicación. Es el mismo patrón ya probado en Komanda.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> <code>make test</code> deja de estar rojo porque existen tests
+        reales y pasa: RLS fail-closed (un tenant no ve ni escribe filas de otro, y sin contexto no ve nada),
+        numeración sin duplicados con dos conexiones concurrentes, y <code>verify_chain()</code> detecta una fila
+        manipulada. <b>Aquí no se hace:</b> ni API, ni interfaz, ni la huella fiscal definitiva (esa la fija la
+        Etapa D).</div>
+    </div>
+
+    <div class="stage later">
+      <div class="head"><span class="id">ETAPA D</span><h4>Vectores fiscales, antes de la implementación</h4>
+        <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">Es la etapa que casi todo el mundo se salta y la que después no se puede recuperar. Sin
+        vectores, la implementación no es verificable: solo es defendible con la palabra de quien la escribió.</p>
+      <ul>
+        <li>Fixtures <code>entrada → esperado</code> (huella, QR, XML VeriFactu, eslabón de cadena) con
+          procedencia documentada: spec, criterio de la AEAT o la implementación ya existente de Komanda.</li>
+        <li>Casos límite obligatorios: NIF con letra, operación exenta, recargo de equivalencia, varias líneas con
+          redondeo, rectificativa, y territorio foral (común / País Vasco / Navarra, ADR <code>B0008</code>).</li>
+        <li>Congelados por hash, igual que los contratos: si un vector cambia, se ve en el diff y hay que
+          justificarlo.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> un conjunto de vectores congelados, con su <code>expected</code>
+        y su procedencia, que cualquiera pueda leer sin ejecutar código. En los casos compartidos con Komanda, el
+        resultado debe ser <b>idéntico</b>. <b>Aquí no se hace:</b> ninguna implementación.</div>
+    </div>
+
+    <div class="stage later">
+      <div class="head"><span class="id">ETAPA E</span><h4><code>fiscal-kit</code> contra los vectores</h4>
+        <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">El corazón del producto y lo que después no se puede improvisar. Librería pura: sin
+        servidor, sin base de datos, sin framework.</p>
+      <ul>
+        <li>Huella SHA-256 con el orden de campos que manda la especificación, QR de verificación, XML, validación
+          de NIF y territorios, y encadenado con anclajes.</li>
+        <li>Adaptadores aislados: SIGN ES y cotejo AEAT detrás de una interfaz, para que el dominio no dependa de
+          un proveedor ni de una URL.</li>
+        <li>Sin credenciales en el repositorio: el sandbox se inyecta por entorno y los tests de red no corren en
+          CI.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> <code>./gradlew :fiscal-kit:test</code> en verde contra
+        <b>todos</b> los vectores de la Etapa D, y CERO dependencias de servidor o de base de datos en el módulo.
+        Si un vector no pasa, se discute el vector antes de tocar el código.</div>
+    </div>
+
+    <div class="stage later">
+      <div class="head"><span class="id">ETAPA F</span><h4>Contratos congelados y servidor con dos endpoints</h4>
+        <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">Los contratos se congelan <b>antes</b> del primer consumidor: en cuanto alguien depende de un
+        evento, cada cambio cuesta una migración. El servidor llega cuando el esquema, los vectores y los
+        contratos ya están decididos.</p>
+      <ul>
+        <li>Pasar los 5 eventos de <code>draft</code> a versión publicada, actualizar <code>LOCK.json</code> y
+          poner <code>make contracts</code> en verde estricto.</li>
+        <li>Ktor con lo mínimo: <code>POST /invoices</code>, <code>GET /health</code> y verificación de cadena. La
+          huella se calcula dentro de la transacción, con el número ya asignado.</li>
+        <li>Outbox en la misma transacción que la factura: si no hay commit no hay evento, y si falla la
+          publicación se reintenta.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> <code>make contracts</code> en verde estricto y un
+        <code>make e2e</code> real que emita una factura contra la API, la lea de vuelta y verifique la cadena
+        completa. Los dos dejan de salir con <code>exit 1</code> porque ya hacen algo.</div>
+    </div>
+
+    <div class="stage later">
+      <div class="head"><span class="id">ETAPA G</span><h4>Interfaz: emitir, verificar, cotejar</h4>
+        <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">La web se escribe cuando hay algo que mostrar. Antes es decorado que hay que rehacer.</p>
+      <ul>
+        <li>Autenticación y contexto de tenant; el RLS no se relaja por comodidad de la interfaz.</li>
+        <li>Emisión de factura, listado, detalle con su huella y vista de cadena con su estado de verificación.</li>
+        <li>Página pública de verificación del QR: el receptor comprueba sin cuenta y sin instalar nada.</li>
+        <li>Cotejo bajo demanda con su estado visible: <code>done</code>, <code>not_found</code>,
+          <code>unavailable</code>. Nunca un «OK» optimista.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> emitir desde la interfaz, verificar el QR desde un móvil sin
+        login, y que la pantalla muestre el mismo estado que devuelve la API.</div>
+    </div>
+
+    <div class="stage later">
+      <div class="head"><span class="id">ETAPA H</span><h4>Infraestructura real y operación</h4>
+        <span class="badge b-warn">Pendiente</span></div>
+      <p class="meta">El compose ya es serio; lo que falta es lo que va dentro de las imágenes y lo que se hace a
+        las tres de la mañana.</p>
+      <ul>
+        <li>Dockerfiles multi-stage de verdad (JVM y Next <code>standalone</code>), usuario sin privilegios, sin
+          secretos en capas.</li>
+        <li>Despliegue con <code>deploy.sh</code> dejando de abortar: destino, verificación de salud y vuelta
+          atrás.</li>
+        <li>Backups automáticos con verificación y <b>un restore ensayado</b> en calendario, no solo probado una
+          vez.</li>
+        <li>Métricas mínimas: emisiones, fallos de cadena, anclajes pendientes, cotejos no disponibles.</li>
+      </ul>
+      <div class="exit"><b>Criterio de salida:</b> un despliegue completo desde cero con un comando, un restore
+        ensayado sin el desarrollador delante, y una alerta que llegue cuando un anclaje no se sella.</div>
+    </div>
+
+    <div class="note"><b>Por qué este orden y no otro:</b> el esquema primero porque cambiarlo después obliga a
+      reescribir contratos y tests; los vectores antes del código porque sin ellos la implementación no es
+      verificable; los contratos antes del primer consumidor porque después cada cambio cuesta una migración; y la
+      interfaz al final porque es lo único que se puede rehacer sin tocar la evidencia. Empezar por el QR o por la
+      pantalla bonita es el camino con más retrabajo.</div>
+  </section>
+
+  <section id="riesgos">
+    <h2><span class="dot"></span>Riesgos y decisiones abiertas</h2>
+    <p class="lead">Lo que puede invalidar el producto no es técnico. Está aquí para que no aparezca por sorpresa en
+      una reunión.</p>
+    <table>
+      <thead><tr><th>Riesgo</th><th>Estado</th><th>Cómo se gestiona</th></tr></thead>
+      <tbody>
+        <tr><td>Confundir Billka con un SIF homologado</td><td><span class="badge b-todo">Abierto</span></td>
+          <td>Texto de producto y README dicen explícitamente lo contrario (ADR <code>B0007</code>); ninguna
+          pantalla promete cumplimiento normativo</td></tr>
+        <tr><td>Cambios normativos de VeriFactu / SIF</td><td><span class="badge b-warn">Vigilar</span></td>
+          <td><code>fiscal-kit</code> aísla formato y huella; los vectores congelados hacen visible el impacto de
+          un cambio</td></tr>
+        <tr><td>Cotejo AEAT: disponibilidad y condiciones de acceso</td>
+          <td><span class="badge b-warn">Vigilar</span></td>
+          <td>Puntual y bajo demanda; <code>unavailable</code> es un estado de primera clase, no un error
+          escondido</td></tr>
+        <tr><td>Firma con SIGN ES: tercero y credenciales del cliente</td>
+          <td><span class="badge b-warn">Vigilar</span></td>
+          <td>Adaptador detrás de interfaz (ADR <code>B0003</code>); sin credenciales en el repositorio; la firma
+          es opcional por diseño</td></tr>
+        <tr><td>Licencia y visibilidad del repositorio</td><td><span class="badge b-warn">Pendiente</span></td>
+          <td>ADR <code>B0010</code> sigue en <i>Propuesto</i>. No bloquea el desarrollo local, pero el
+          repositorio no se hace público con la licencia sin decidir</td></tr>
+        <tr><td>Una factura con la cadena rota por un fallo de Billka</td>
+          <td><span class="badge b-todo">Abierto</span></td>
+          <td>Los anclajes son el seguro: un tramo sellado no se puede reescribir sin que se note. Exige ensayar
+          el restore y la verificación, no solo el backup</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="comprobarlo">
+    <h2><span class="dot"></span>Cómo comprobarlo tú mismo</h2>
+    <p class="lead">Ninguna afirmación de esta página requiere confiar en quien la escribió. Todo lo de arriba se
+      comprueba con estos comandos, y lo que debe fallar, falla.</p>
+    <pre><code>cd billka
+make dev          # levanta PostgreSQL + core (genera .env si falta)
+
+make build        # BUILD SUCCESSFUL con 0 fuentes: compila porque no hay nada que romper
+make test         # FALLA (script exit 1, make 2): 0 tests. Es lo correcto (ADR B0011)
+make contracts    # FALLA: quedan 5 contratos en draft y --lock no congela borradores
+python3 contracts/check.py --draft   # OK: valida de verdad y avisa de los 5 borradores
+docker compose -f infra/docker/docker-compose.yml --env-file .env config -q   # silencio = válido
+./scripts/backup.sh && ./scripts/restore.sh    # backup verificado + restore real
+git log --oneline # (vacío hasta el primer commit)</code></pre>
+    <div class="grid g3">
+      <div class="card"><h4>Lo que está probado</h4><p>Build, validación de contratos en modo borrador,
+        <code>compose config</code>, backup y restore con datos reales, y los 8 scripts con sintaxis
+        validada.</p></div>
+      <div class="card"><h4>Lo que está en rojo a propósito</h4><p><code>make test</code>,
+        <code>make contracts</code> estricto, <code>make seed</code>, <code>make e2e</code> y el CI. Cada uno
+        explica en su salida por qué falla.</p></div>
+      <div class="card"><h4>Lo que no existe</h4><p>Facturas, huellas, QR, cotejos, firmas y pantallas
+        funcionales. Ninguna demo es posible todavía sin maqueta.</p></div>
+    </div>
+  </section>
+
+  <section id="documentos">
+    <h2><span class="dot"></span>Documentos hermanos</h2>
+    <p class="lead">Esta página cuenta el producto y el orden; el detalle técnico vive en el repositorio.</p>
+    <table>
+      <thead><tr><th>Documento</th><th>Qué contiene</th></tr></thead>
+      <tbody>
+        <tr><td><code>ARCHITECTURE.md</code></td><td>Componentes, flujo de una factura, modelo de datos V1–V3,
+          tenancy con RLS y decisiones, con el estado real de cada pieza</td></tr>
+        <tr><td><code>docs/adr/B0001</code>–<code>B0011</code></td><td>Una decisión por ADR, con contexto,
+          alternativas y consecuencias</td></tr>
+        <tr><td><code>docs/contracts/event-model.md</code> · <code>versioning.md</code></td><td>Eventos de
+          dominio, outbox y reglas de versionado de contratos</td></tr>
+        <tr><td><code>docs/runbook/backup-restore.md</code></td><td>Procedimiento de backup verificado y restore
+          ensayado</td></tr>
+        <tr><td><code>billka_auditoria_2026-11-08.html</code></td><td>Auditoría del scaffold del 8-nov, previa al
+          saneamiento. Se conserva como registro; sus cifras ya no describen el repositorio</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    Billka · integridad fiscal verificable · presentación y hoja de ruta · 10-nov-2026<br>
+    Estado verificado por ejecución, no por lectura. Documento hermano de
+    <a href="billka_auditoria_2026-11-08.html">la auditoría del scaffold (8-nov-2026)</a>.
+  </div>
+</footer>
+</body>
+</html>
+

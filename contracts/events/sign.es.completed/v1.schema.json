@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://billka.es/contracts/events/sign.es.completed/v1.schema.json",
+  "title": "sign.es.completed v1 (data)",
+  "description": "Resultado de firmar un registro en SIGN ES (fiskaly). Un fallo se publica igual: silenciarlo es lo que convierte un SIF en no conforme.",
+  "x-status": "draft",
+  "type": "object",
+  "required": [
+    "invoice_id",
+    "transaction_id",
+    "signer_org_id",
+    "status",
+    "completed_at"
+  ],
+  "properties": {
+    "invoice_id": { "type": "string", "format": "uuid" },
+    "transaction_id": { "type": "string", "minLength": 1, "description": "Id de la transacción en fiskaly; idempotencia ante reintentos" },
+    "signer_org_id": { "type": "string", "minLength": 1, "description": "Organización gestionada en SIGN ES" },
+    "status": { "enum": ["completed", "failed"] },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "signature_ref": { "type": "string", "minLength": 1, "description": "Referencia recuperable de la firma; obligatoria si status=completed" },
+    "error_code": { "type": "string", "minLength": 1, "description": "Código del proveedor; obligatorio si status=failed" },
+    "attempt": { "type": "integer", "minimum": 1 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "completed" } }, "required": ["status"] },
+      "then": { "required": ["signature_ref"] }
+    },
+    {
+      "if": { "properties": { "status": { "const": "failed" } }, "required": ["status"] },
+      "then": { "required": ["error_code"] }
+    }
+  ],
+  "additionalProperties": false
+}

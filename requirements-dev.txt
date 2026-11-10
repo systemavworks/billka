@@ -1,0 +1,7 @@
+# Dependencias de herramientas (no del producto)
+# Uso: python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-dev.txt
+#
+# Sin extras `[format]` a propósito: check.py valida `date-time` con la biblioteca estándar
+# porque jsonschema ignora ese formato (en silencio) cuando falta rfc3339-validator.
+jsonschema>=4.23,<5
+

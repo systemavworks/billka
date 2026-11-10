@@ -1,0 +1,18 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": "core" },
+    { "path": "web" },
+    { "path": "fiscal-kit" },
+    { "path": "contracts" }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "files.exclude": {
+      "**/.gradle": true,
+      "**/build": true,
+      "**/.next": true,
+      "**/node_modules": true
+    }
+  }
+}

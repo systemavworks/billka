@@ -1,0 +1,10 @@
+groups:
+  - name: billka
+    rules:
+      - alert: BillkaDiskHigh
+        expr: node_filesystem_avail_bytes / node_filesystem_size_bytes < 0.30
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disco Billka por debajo del 30%"

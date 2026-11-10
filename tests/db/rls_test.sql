@@ -1,0 +1,3 @@
+-- TODO: implementar migración/test: tests/db/rls_test.sql
+-- Scaffold inicial Billka.
+-- No ejecutar lógica fiscal real hasta cerrar diseño VeriFactu/SIF.

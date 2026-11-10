@@ -1,0 +1,34 @@
+name: Contratos
+
+# Se ejecuta cuando cambia algo que puede romper un contrato: el propio contrato, sus
+# ejemplos, el validador o la herramienta de CI.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "contracts/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/contracts.yml"
+  pull_request:
+    paths:
+      - "contracts/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/contracts.yml"
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      # Modo borrador: valida envelope, schemas, ejemplos válidos e inválidos.
+      - name: Validar en modo borrador
+        run: ./scripts/check-contracts.sh --draft
+      # Estricto: exige todo released y registrado en LOCK.json. Hoy falla a propósito.
+      - name: Exigir contratos congelados
+        run: ./scripts/check-contracts.sh
+        continue-on-error: ${{ github.event_name == 'push' }}
+

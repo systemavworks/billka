@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://billka.es/contracts/events/chain.anchored/v1.schema.json",
+  "title": "chain.anchored v1 (data)",
+  "description": "Un tramo de la cadena de huellas quedó anclado fuera de la base de datos (testigo externo). Sin esto, quien tenga acceso a la BD puede reescribir la cadena entera.",
+  "x-status": "draft",
+  "type": "object",
+  "required": [
+    "seq_from",
+    "seq_to",
+    "head_huella",
+    "anchored_at",
+    "anchor_kind",
+    "anchor_ref"
+  ],
+  "properties": {
+    "seq_from": { "type": "integer", "minimum": 1 },
+    "seq_to": { "type": "integer", "minimum": 1 },
+    "head_huella": { "type": "string", "minLength": 64, "maxLength": 64, "description": "Huella de seq_to; es lo que sella el testigo" },
+    "anchored_at": { "type": "string", "format": "date-time" },
+    "anchor_kind": { "enum": ["tsa", "object_storage", "third_party_email", "append_only_log"] },
+    "anchor_ref": { "type": "string", "minLength": 1, "description": "Identificador recuperable del testigo (nº de serie TSA, clave de objeto, id de mensaje)" },
+    "anchor_proof": { "type": "string", "description": "Prueba opcional en base64 (token TSA); si falta, el anclaje es solo de referencia" }
+  },
+  "additionalProperties": false
+}

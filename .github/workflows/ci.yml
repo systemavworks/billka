@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compilar (Gradle 8.10 + JDK 21)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: ./gradlew build
+        working-directory: core
+        run: ./gradlew --no-daemon --console=plain build
+
+  tests:
+    name: Tests (falla si no hay ninguno)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      # ROJO A PROPÓSITO hasta el primer test real: `gradle test` sin tests devuelve 0,
+      # y un job verde por no haber probado nada es peor que un job rojo.
+      - run: ./scripts/test.sh
+
+  contracts-draft:
+    name: Contratos (modo borrador)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: ./scripts/check-contracts.sh --draft
+
+  contracts-frozen:
+    name: Contratos congelados (informativo)
+    runs-on: ubuntu-latest
+    # Informativo mientras los 5 contratos sigan en draft: falla, y ese fallo es la verdad.
+    # Al congelarlos (check.py --lock) hay que quitar `continue-on-error`.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: ./scripts/check-contracts.sh
+

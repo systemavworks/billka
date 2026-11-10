@@ -1,0 +1,8 @@
+# Scaffold Billka core.
+# Imagen placeholder hasta implementar build Gradle real.
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+RUN addgroup -S billka && adduser -S billka -G billka
+USER billka
+EXPOSE 8080
+CMD ["sh", "-c", "echo 'Billka core scaffold pendiente de implementar. Puerto 8080.' && sleep infinity"]

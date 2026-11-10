@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://billka.es/contracts/events/invoice.cancelled/v1.schema.json",
+  "title": "invoice.cancelled v1 (data)",
+  "description": "Factura rectificativa que anula una anterior. No existe borrado: se emite una rectificativa y se enlaza aquí.",
+  "x-status": "draft",
+  "type": "object",
+  "required": [
+    "invoice_id",
+    "cancelled_at",
+    "reason",
+    "rectifying_invoice_id",
+    "huella"
+  ],
+  "properties": {
+    "invoice_id": { "type": "string", "format": "uuid", "description": "Factura anulada" },
+    "cancelled_at": { "type": "string", "format": "date-time" },
+    "reason": { "enum": ["error", "duplicate", "return", "discount_after_issue", "other"] },
+    "reason_detail": { "type": "string", "maxLength": 500 },
+    "rectifying_invoice_id": { "type": "string", "format": "uuid", "description": "La rectificativa que la deja a cero; nunca es la propia factura" },
+    "huella": { "type": "string", "minLength": 64, "maxLength": 64, "description": "Huella del registro de anulación dentro de la cadena" },
+    "prev_huella": { "type": "string", "minLength": 64, "maxLength": 64 }
+  },
+  "additionalProperties": false
+}
