@@ -432,9 +432,10 @@
           <td><span class="badge b-warn">Vigilar</span></td>
           <td>Adaptador detrás de interfaz (ADR <code>B0003</code>); sin credenciales en el repositorio; la firma
           es opcional por diseño</td></tr>
-        <tr><td>Licencia y visibilidad del repositorio</td><td><span class="badge b-warn">Pendiente</span></td>
-          <td>ADR <code>B0010</code> sigue en <i>Propuesto</i>. No bloquea el desarrollo local, pero el
-          repositorio no se hace público con la licencia sin decidir</td></tr>
+        <tr><td>Licencia y visibilidad del repositorio</td><td><span class="badge b-warn">Mitigado</span></td>
+          <td>ADR <code>B0010</code>: la licencia propietaria ya está publicada en su propio commit, así que los
+          commits nuevos no caen bajo la Unlicense anterior. Queda una casilla barata: pasar el repositorio
+          a privado, sin reescribir historial</td></tr>
         <tr><td>Una factura con la cadena rota por un fallo de Billka</td>
           <td><span class="badge b-todo">Abierto</span></td>
           <td>Los anclajes son el seguro: un tramo sellado no se puede reescribir sin que se note. Exige ensayar
@@ -456,7 +457,7 @@ make contracts    # FALLA: quedan 5 contratos en draft y --lock no congela borra
 python3 contracts/check.py --draft   # OK: valida de verdad y avisa de los 5 borradores
 docker compose -f infra/docker/docker-compose.yml --env-file .env config -q   # silencio = válido
 ./scripts/backup.sh && ./scripts/restore.sh    # backup verificado + restore real
-git log --oneline # (vacío hasta el primer commit)</code></pre>
+git log --oneline -3 # licencia, árbol saneado y esta corrección</code></pre>
     <div class="grid g3">
       <div class="card"><h4>Lo que está probado</h4><p>Build, validación de contratos en modo borrador,
         <code>compose config</code>, backup y restore con datos reales, y los 8 scripts con sintaxis

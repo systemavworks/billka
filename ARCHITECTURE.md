@@ -167,7 +167,7 @@ sin `BYPASSRLS`).
 | `B0007` | no colaborador social |
 | `B0008` | territorios (común, País Vasco, Navarra) |
 | `B0009` | puntero al ADR 0009 canónico de Komanda |
-| `B0010` | licencia y visibilidad (pendiente; no bloquea el trabajo local) |
+| `B0010` | licencia y visibilidad (propietaria publicada; visibilidad aún pública) |
 | `B0011` | veracidad operativa: nada dice OK sin hacerlo |
 
 ## 9. Estado real

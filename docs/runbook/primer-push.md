@@ -1,12 +1,17 @@
 # Runbook · primer push de Billka
 
-El árbol está versionado en local desde el 10-nov-2026 (`git init -b main`, remoto `origin`
-configurado), pero **no se ha hecho push**: el primer push es irreversible porque el remoto ya
-tiene un commit con la **Unlicense** (dominio público). Ver `docs/adr/B0010-licencia-y-visibilidad.md`.
+**Estado: ejecutado el 10-nov-2026.** `origin/main` = `3fd574b`. Se hizo en dos commits: primero
+`LICENSE` propietario (`019070c`) y después el árbol completo (`3fd574b`), para que el historial
+deje constancia del cambio de licencia. El remoto tenía 3 commits previos
+(`34f5741` inicial con Unlicense, `6d246e5` LICENSE, `400ad79` logo).
 
-## 0. Requisito
+Lo que sigue se conserva como registro de cómo se hizo, no como tarea pendiente.
 
-ADR B0010 decidido: licencia definitiva + visibilidad del repositorio.
+## 0. Requisito (resuelto a medias)
+
+ADR B0010: **licencia propietaria ya publicada**; la **visibilidad** del repositorio sigue
+abierta. Si se decide privado: GitHub → Settings → General → Danger Zone → *Change repository
+visibility*. Si se queda público, conviene revisar que no haya nada que no deba serlo.
 
 ## 1. Alinear con el remoto (tiene 1 commit: `README.md` + `LICENSE`)
 
