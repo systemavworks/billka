@@ -42,6 +42,12 @@ Regla única: **si un artefacto no hace su trabajo, falla o no existe**. Nunca d
    estándar (RFC 3339 con offset obligatorio), sin depender de un paquete opcional.
 7. CI real (`.github/workflows/ci.yml`, `contracts.yml`). `tests` y `contracts-frozen` están en
    rojo a propósito y está escrito en el workflow por qué.
+8. **Datos de mercado.** La misma regla se aplica a las cifras: un porcentaje de terceros que no se
+   puede abrir en su fuente primaria no se publica como argumento. O se retira, o se marca como
+   hipótesis propia y se sustituye por datos del piloto. Las cifras 1,75 % / 98 % / 82 % / 37 % que
+   circularon en el roadmap se retiraron el 10-nov-2026 por este motivo: no había fuente accesible.
+   Se sustituyen por hechos normativos citables artículo a artículo (RRSIF arts. 8.2, 11, 14.1, 15
+   y 16.1; LGT art. 66).
 
 ## Consecuencias
 

@@ -49,8 +49,23 @@ Cuatro constancias encadenadas, no un sello genérico:
 |---|---|---|---|
 | ① | **Entrada** | Huella del lote entregado (CSV/Excel/PDF/XML), fecha y quién lo entregó | «yo te pasé esa factura y no la has metido» |
 | ② | **Salida** | Huella de los registros que el SIF del despacho emitió o remitió, con fecha y responsable | coherencia entre lo emitido y lo conservado |
-| ③ | **Cruce** | Comparación campo a campo (NIF, fecha, número, base, cuota, total) con estado por línea: coincide / ausente en entrada / ausente en salida / discrepante | lo que ninguna parte puede fabricar sola |
+| ③ | **Cruce** | Comparación de base, cuota, total y fecha con estado por línea: coincide / ausente en entrada / ausente en salida / discrepante (+ ambiguo, duplicado, no interpretable) | lo que ninguna parte puede fabricar sola |
 | ④ | **Ancla** | Hash raíz diario fijado por un tercero (RFC 3161) y publicable fuera de nuestra infraestructura | «¿cómo sé que no lo generaste ayer?» |
+
+**Precisiones técnicas** (diseño completo en [`docs/design/frontera-tecnica.md`](../design/frontera-tecnica.md)):
+
+- Lo hasheado es **solo el contenido** (lote, huellas, periodo). La fecha de sellado, la firma y el ancla
+  viven en el **sobre** y no entran en la huella: si entraran, `verificar` necesitaría nuestra base de
+  datos y el producto volvería a ser auto-referencia.
+- **Dos huellas por fichero**: bytes (el archivo no cambió) y contenido canónico (los datos no
+  cambiaron). Un Excel re-guardado cambia lo primero y no lo segundo; distinguir «guardar» de
+  «manipular» es la mitad del valor.
+- La **clave del cruce no incluye la fecha**: `(nif_emisor, numero)`. La fecha se compara; una fecha mal
+  tecleada debe salir como discrepante, no como dos ausencias.
+- El **ancla prueba existencia, no ausencia**: no demuestra que no hubiera más facturas ese día. Eso lo
+  da el cruce, que compara dos lados.
+- El **cómputo pesado es local** (CLI y agente de carpeta); a la nube solo suben huellas y contadores.
+  Billka no custodia documentos de terceros.
 
 ### 2. Cinco prohibiciones
 

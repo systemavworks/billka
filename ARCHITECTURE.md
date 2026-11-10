@@ -157,6 +157,10 @@ Propiedades que el diseño exige:
   referencia la anterior (`reemplaza_a`).
 - El cruce no arregla nada: **clasifica**. Un desajuste es un hallazgo, no un error del programa.
 - Si la copia al autónomo no sale, la constancia queda marcada como incompleta.
+- **El piloto de 2026 no necesita nada de este apartado.** La CLI y el agente de carpeta (Etapa D) corren
+  sin Ktor y sin Postgres: el formato y los algoritmos están cerrados en
+  [`docs/design/frontera-tecnica.md`](docs/design/frontera-tecnica.md). Todo lo anterior se implementa
+  cuando exista un cliente que pague, no antes.
 
 ## 6. Modelo de datos (4 migraciones decididas, 0 escritas)
 

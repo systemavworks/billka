@@ -191,6 +191,43 @@
     <div class="note"><b>Y lo que la AEAT ya hace gratis:</b> el destinatario puede escanear el QR y verificar en
       la sede que la factura se declaró. Por eso Billka <b>no vende «¿consta esta factura?»</b>: eso es un
       commodity. El cotejo AEAT entra como <b>una fuente más del cruce</b>, no como producto.</div>
+
+    <h3>Las dos modalidades: aquí está el negocio</h3>
+    <p>El RRSIF no obliga a enviar nada a la AEAT. Obliga a que el SIF sea honesto. Hay dos formas de serlo, y
+      la diferencia es exactamente nuestro hueco:</p>
+    <table>
+      <thead><tr><th></th><th>NO VERI*FACTU (modalidad local)</th><th>VERI*FACTU (remisión)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Dónde vive el registro</b></td>
+          <td>En el disco del despacho —plazo de conservación de la LGT, art. 8.2.c) RRSIF— y solo allí</td>
+          <td>Remitido a la AEAT, que lo custodia</td></tr>
+        <tr><td><b>Quién comprueba que no se ha tocado</b></td>
+          <td><b>Nadie.</b> La huella encadenada existe, pero no hay tercero que la mire hasta una inspección</td>
+          <td>La AEAT, con cada envío</td></tr>
+        <tr><td><b>Qué aporta Billka</b></td>
+          <td><b>Todo el valor</b>: es la única verificación externa que existe en esa modalidad</td>
+          <td>Poco en integridad —la AEAT presume el cumplimiento por diseño (art. 16.2 RRSIF)—, pero el
+            <b>cruce de la entrega sigue faltando</b> igual que en local</td></tr>
+      </tbody>
+    </table>
+    <div class="note note-warn"><b>Consecuencia de diseño:</b> Billka no es «un complemento de Veri*Factu». Es el
+      <b>único control externo de la modalidad que no remite</b>. Por eso el producto no depende del calendario
+      de adaptación: si la prórroga se mueve otra vez, el problema de la custodia local sigue intacto.</div>
+
+    <div class="note"><b>Lo que NO es argumento de venta:</b> el modo local <b>no</b> da margen para «arreglar»
+      cierres antes de que Hacienda los vea. Rectificar no borra nada en ninguna de las dos modalidades: una
+      factura se anula con su propio registro de anulación, encadenado al anterior (art. 11 RRSIF). Billka no se
+      vende como herramienta para ganar tiempo frente a la AEAT, y si un despacho compra por ese motivo es un
+      cliente que nos mete en un problema. Los motivos legítimos para quedarse en local son otros tres: no
+      depender de la disponibilidad de la sede electrónica para poder facturar, no exponer la facturación diaria
+      en tiempo real y no duplicar el dato en dos sistemas.</div>
+
+    <div class="note"><b>Quién elige realmente la modalidad:</b> sobre el papel, el obligado. En la práctica, el
+      fabricante del SIF que le venden: en VERI*FACTU se presume el cumplimiento por diseño (art. 16.2 RRSIF) y
+      el desarrollador se ahorra conservación y exportaciones, así que muchos SIF llegarán con remisión
+      activada por defecto. Por eso no apostamos a que «casi todos» sean locales —no tenemos con qué—: apostamos
+      a que en <b>las dos</b> modalidades falta lo mismo, que alguien demuestre que lo que se entregó es lo que
+      se emitió.</div>
   </section>
 
   <section id="constancias">
@@ -326,10 +363,58 @@
           <code>fiscal-kit</code>, mismo método, ningún cliente inventado.</p></div>
     </div>
 
-    <div class="note"><b>Estimaciones, no promesas:</b> las cifras de esta tabla son hipótesis de trabajo con la
-      información disponible hoy, no resultados. Se revisan con el primer piloto y se sustituyen por lo que
-      ocurra de verdad. Un escenario pesimista —20 a 40 despachos— son 1–2 k€/mes: eso no sostiene una empresa, y
-      por eso el piloto de diciembre tiene que decir si el mercado existe antes de escribir más código.</div>
+    <h3>El tamaño del nicho: lo que la norma sí dice</h3>
+    <div class="note note-warn"><b>Aquí no hay porcentajes, y es deliberado.</b> La obligación del RRSIF todavía no
+      está en vigor, así que <b>no existe</b> un dato oficial de cuántos obligados remiten y cuántos no: lo único
+      medible hoy son adhesiones voluntarias al periodo de pruebas, y su denominador depende de cómo se cuente
+      (¿obligados? ¿empresas? ¿declaraciones presentadas?). Cualquier cuota que publique la prensa es una
+      estimación de terceros. Las cifras que esta página usó antes (<b>1,75 % · 98 % · 82 % · 37 %</b>) <b>se
+      retiran</b>: no pudimos abrir la fuente original. Se sustituyen por hechos normativos —que se citan
+      artículo a artículo— y por lo que mida el piloto en la Etapa H (ADR <code>B0011</code>).</div>
+
+    <table>
+      <thead><tr><th>Hecho citable</th><th>Dónde</th><th>Qué implica para Billka</th></tr></thead>
+      <tbody>
+        <tr><td>Remitir a la AEAT es <b>voluntario</b>; un sistema solo pasa a ser VERI*FACTU cuando el obligado
+          remite <b>efectivamente</b> todos los registros</td>
+          <td>arts. 15 y 16.1 RRSIF</td>
+          <td>El 100 % de los obligados del art. 3.1 tendrá que tener un SIF adaptado; <b>remitir es una
+            elección</b>. El mercado de Billka es el complemento de quienes remiten, y hoy ese complemento no
+            es medible.</td></tr>
+        <tr><td>Los requisitos técnicos son los mismos en las dos modalidades: huella encadenada, registro de
+          eventos, conservación y trazabilidad</td>
+          <td>art. 8.2 RRSIF</td>
+          <td>El modo local no es «menos exigente»: es <b>menos vigilado</b> — no hay tercero que mire el
+            registro hasta que alguien lo pide.</td></tr>
+        <tr><td>El registro se conserva en local durante el plazo de la LGT, con procedimiento de descarga y
+          volcado a almacenamiento externo en formato electrónico legible</td>
+          <td>art. 8.2.c) RRSIF · art. 66 LGT</td>
+          <td>El plazo es el de prescripción (<b>4 años</b>), <b>no 10</b>: el «diez años» de la LGT está en el
+            art. 66 bis.2 y solo afecta a bases o cuotas compensadas. Si el dato vive en un disco del despacho,
+            alguien tendrá que poder demostrar después que no se tocó.</td></tr>
+        <tr><td>La comprobación de integridad por la Administración es <b>a requerimiento</b>: acceso completo e
+          inmediato y descarga, volcado o copia cuando se persona</td>
+          <td>art. 14.1 RRSIF</td>
+          <td>En modo local la integridad se verifica <b>ex post</b>: en una inspección, años después, sobre lo
+            que el despacho conserve. Ese es el hueco que cubre una constancia sellada hoy.</td></tr>
+        <tr><td>Rectificar no borra: una factura se anula con su propio <b>registro de anulación</b>, encadenado
+          al anterior</td>
+          <td>art. 11 RRSIF</td>
+          <td>El modo local reduce vigilancia, no obligaciones. Ninguna modalidad permite maquillar un cierre.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>Plazos vigentes</b> (FAQ AEAT, 21-oct-2026, Disposición final cuarta del RRSIF modificada
+      por el RDL 15/2025): <b>1-ene-2027</b> para Impuesto de Sociedades y <b>1-jul-2027</b> para el resto,
+      autónomos en IRPF incluidos. La ley <b>no obliga a remitir</b>: obliga a que el SIF sea honesto. Quedarse en
+      la modalidad local es una opción legal y explícita (art. 15 RRSIF), y es donde el registro se queda solo en
+      un disco.</div>
+
+    <div class="note"><b>Estimaciones, no promesas:</b> el escenario de 20 a 40 despachos es <b>nuestra</b>
+      estimación de negocio, no un dato del mercado: 1–2 k€/mes no sostienen una empresa, y por eso el piloto de
+      diciembre tiene que decir si el mercado existe antes de escribir más código. La diferencia con las cifras
+      retiradas es la de siempre: una hipótesis nuestra se puede discutir con nosotros; un porcentaje ajeno sin
+      fuente no se puede discutir con nadie.</div>
   </section>
 
   <section id="estado">
@@ -426,13 +511,23 @@
       <ul>
         <li><b>Formato de lote</b> (el «expediente»): <code>manifest.json</code> + ficheros originales. El
           manifest declara emisor del lote, receptor, periodo, lista de ficheros con su SHA-256, y la huella del
-          manifest. Un lote sin manifest no entra.</li>
-        <li><b>Huella canónica</b>: normalización explícita (UTF-8, LF, orden fijo de campos, importes en
-          céntimos) antes de calcular SHA-256. Sin normalización escrita, dos máquinas dan dos huellas.</li>
-        <li><b>Encadenado</b>: portar el mecanismo ya probado en Komanda (<code>V4</code> cadena +
-          <code>chain_anchor</code>, <code>V17</code> sello diario) a una librería pura, sin SQL ni framework.</li>
-        <li><b>Vectores</b>: 6 casos con <code>entrada → huella esperada</code> congelada por hash, incluidos
-          los que deben fallar (fichero cambiado, manifest sin huella, codificación distinta).</li>
+          manifest. Un lote sin manifest no entra. Esquema cerrado en <code>docs/design/frontera-tecnica.md</code>.</li>
+        <li><b>Dos huellas por fichero</b>: <code>bytes_sha256</code> (el archivo no cambió) y
+          <code>contenido_sha256</code> (los datos no cambiaron). Un Excel re-guardado cambia de bytes sin
+          cambiar de datos: con una sola huella el verificador acusaría manipulación donde solo hubo «guardar».</li>
+        <li><b>Nada volátil dentro de lo hasheado</b>: sin fecha de sellado, sin id aleatorio, sin orden de
+          sistema de ficheros. Si la fecha entrara en la huella, <code>verificar</code> necesitaría nuestra base
+          de datos y dejaría de ser verificable por un tercero.</li>
+        <li><b>Huella canónica</b>: JCS (RFC 8785) para el JSON y normalización explícita de registros (UTF-8 NFC,
+          LF, importes en céntimos, fechas ISO, NIF sin separadores, número como texto) antes de calcular
+          SHA-256. Sin normalización escrita, dos máquinas dan dos huellas.</li>
+        <li><b>Encadenado</b>: portar de Komanda (<code>V4</code> cadena + <code>chain_anchor</code>,
+          <code>V17</code> sello diario) solo como <b>control interno</b>: no es prueba frente a terceros.</li>
+        <li><b>Vectores</b>: <b>8</b> casos con <code>entrada → huella esperada</code> congelada, incluidos los
+          que deben fallar (fichero cambiado, Excel re-guardado, manifest sin huella, formato desconocido).</li>
+        <li><b>Rechazo cerrado</b>: formato desconocido o algoritmo que no implementamos → error, nunca
+          «seguimos a ver qué pasa». Y v1 del algoritmo de huella <b>no se cambia nunca</b>: las constancias
+          viejas tienen que seguir verificando.</li>
         <li><b>Sustituir los 5 contratos</b> del modelo «facturador» por los del modelo de constancias:
           <code>lote.recibido</code>, <code>lote.sellado</code>, <code>cruce.realizado</code>,
           <code>ancla.publicada</code> y <code>constancia.emitida</code>.</li>
@@ -453,9 +548,14 @@
         <li><code>billka verificar constancia.json lote/</code> → <b>recalcula</b> la huella desde los ficheros
           originales y sale con 0 o 1. No consulta nuestra base de datos: si la necesitara, no sería verificable
           por un tercero.</li>
+        <li><b>Modo agente de carpeta</b>: un vigía sobre <code>Billka/entrada/&lt;cliente&gt;/&lt;mes&gt;/</code>
+          que sella al aparecer ficheros. Sin esto, el piloto se abandona el mes que el asesor olvida lanzar el
+          comando. Aquí no hay Ktor ni Postgres: es el mismo núcleo con otro disparador.</li>
         <li><b>Test obligatorio de manipulación</b>: se cambia un dígito de una fila del CSV original y
           <code>verificar</code> devuelve <b>1</b> con el fichero y la línea exacta. Este test es el argumento de
           venta entero.</li>
+        <li><b>Test de falsa alarma</b>: se re-guarda el Excel sin tocar datos y <code>verificar</code> devuelve
+          <b>0</b>. Un verificador que grita con cada «guardar» no lo usa nadie dos meses.</li>
         <li>Salida legible para un humano, no solo para un log: qué se comprobó, cuántas de cuántas, qué
           falló.</li>
       </ul>
@@ -470,9 +570,13 @@
       <p class="meta">Es la única pieza que ninguna de las dos partes puede fabricar sola, y por eso es el corazón
         del producto. Todo lo anterior era prerrequisito: ahora aparece el valor.</p>
       <ul>
-        <li>Emparejar por clave compuesta (NIF emisor + número + fecha) y comparar importes al céntimo.</li>
-        <li>Clasificar cada línea en uno de cuatro estados: <b>coincide</b>, <b>ausente en salida</b>,
-          <b>ausente en entrada</b>, <b>discrepante</b> (con el campo y los dos valores).</li>
+        <li>Emparejar por <b>(NIF emisor, número)</b> y comparar base, cuota, total y fecha al céntimo. La
+          <b>fecha no va en la clave</b>: si fuera, una fecha mal tecleada se convierte en dos ausencias en vez de
+          un discrepante, que es justo lo que el asesor necesita ver.</li>
+        <li>Clasificar cada línea en uno de cuatro estados de negocio: <b>coincide</b>, <b>ausente en salida</b>,
+          <b>ausente en entrada</b>, <b>discrepante</b> (con el campo y los dos valores). Y tres estados técnicos
+          que evitan el «no sé»: <b>ambiguo</b> (número repetido sin desambiguar), <b>duplicado en entrada</b> y
+          <b>no interpretable</b> (el PDF escaneado se sella como documento entregado, no se lee).</li>
         <li>Duplicados detectados <b>antes</b> de cruzar: la misma factura entregada dos veces es un hallazgo,
           no un error del programa.</li>
         <li>Informe en CSV y en texto para presentar a un cliente, no en JSON crudo.</li>
@@ -490,8 +594,15 @@
       <p class="meta">Sin tercero, el sello es auto-referencia: «fíate de mí» con pasos extra. El ancla es lo que
         convierte una promesa en un hecho comprobable por cualquiera, incluso por quien no es cliente.</p>
       <ul>
-        <li>Hash raíz diario de todas las constancias del día → sello de tiempo <b>RFC 3161</b> de una TSA
-          reconocida (o, si falla, publicación en un medio ajeno a nuestra infraestructura).</li>
+        <li>Sello de tiempo <b>RFC 3161</b> de una TSA reconocida. En el piloto, <b>uno por constancia</b>:
+          céntimos y sin estado global. El árbol de Merkle diario llega solo si el volumen lo exige, y entonces la
+          prueba de inclusión (<code>audit_path</code>) viaja <b>dentro</b> de la constancia: si hay que pedírnosla,
+          la independencia se pierde.</li>
+        <li>Si la TSA falla: publicación en un medio ajeno a nuestra infraestructura, y estado
+          <code>pendiente</code> a la vista.</li>
+        <li><b>Límite que se dice en voz alta:</b> el ancla prueba <b>existencia</b>, no <b>ausencia</b>. Demuestra
+          que un hash existía ese día; no demuestra que no hubiera otras facturas. Eso lo da el cruce, que compara
+          dos lados.</li>
         <li>Página pública: <code>/v/{codigo}</code> devuelve la constancia y <b>el resultado de la
           verificación</b>, sin login y sin datos personales de más.</li>
         <li>La página dice siempre lo mismo: qué se comprobó, cuándo y con qué resultado. <b>Nunca</b> «válido»,
@@ -651,6 +762,10 @@ git log --oneline -4 # licencia, árbol saneado, documentación y este cambio de
           fundamento</td></tr>
         <tr><td><code>docs/fiscal/cotejo-aeat.md</code></td><td>Qué se puede y qué no se puede cotejar contra la
           AEAT, y por qué el QR público degrada el cotejo a fuente secundaria</td></tr>
+        <tr><td><code>docs/design/frontera-tecnica.md</code></td><td><b>El detalle técnico</b>: artefactos
+          (<code>manifest.json</code>, constancias), algoritmos de huella, normalización canónica, estados del
+          cruce, los 8 vectores de prueba, los cuatro modos de trabajo y los 7 errores de diseño que hay que
+          evitar antes de escribir código</td></tr>
         <tr><td><code>ARCHITECTURE.md</code></td><td>Componentes, flujo de un lote, modelo de datos, tenancy con
           RLS y decisiones, con el estado real de cada pieza</td></tr>
         <tr><td><code>docs/contracts/event-model.md</code> · <code>versioning.md</code></td><td>Eventos de
